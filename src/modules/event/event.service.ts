@@ -8,7 +8,7 @@ import {
 import { CreateEventDto, CreateTicketTypeDto } from "./dto/create-event.dto.js";
 
 export class EventService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient) { }
 
   private getOrCreateOrganizer = async (userId: number) => {
     let organizer = await this.prisma.organizer.findUnique({
@@ -134,7 +134,7 @@ export class EventService {
       orderBy: { [sortBy]: sortOrder },
     });
 
-    // Calculate organizer rating from reviews
+    // Calculate organizer rating from reviews and compute seat data
     const eventsWithRating = await Promise.all(
       events.map(async (event) => {
         const reviews = await this.prisma.review.findMany({
@@ -147,8 +147,18 @@ export class EventService {
             ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
             : 0;
 
+        // Compute seat/price info from ticketTypes
+        const totalSeats = event.ticketTypes.reduce((sum, tt) => sum + tt.totalSeat, 0);
+        const availableSeats = event.ticketTypes.reduce((sum, tt) => sum + tt.availableSeat, 0);
+        const price = event.ticketTypes.length > 0
+          ? Math.min(...event.ticketTypes.map((tt) => tt.price))
+          : 0;
+
         return {
           ...event,
+          price,
+          totalSeats,
+          availableSeats: Math.max(availableSeats, 0),
           organizer: {
             ...event.organizer,
             rating: avgRating,
@@ -225,6 +235,11 @@ export class EventService {
 
     return {
       ...event,
+      price: event.ticketTypes.length > 0
+        ? Math.min(...event.ticketTypes.map((tt) => tt.price))
+        : 0,
+      totalSeats: event.ticketTypes.reduce((sum, tt) => sum + tt.totalSeat, 0),
+      availableSeats: Math.max(event.ticketTypes.reduce((sum, tt) => sum + tt.availableSeat, 0), 0),
       organizer: {
         ...event.organizer,
         rating: avgRating,
@@ -313,12 +328,20 @@ export class EventService {
       );
     }
 
-    // Validate dates
     const startDate = new Date(body.startDate);
     const endDate = new Date(body.endDate);
 
-    if (endDate < startDate) {
+    if (endDate <= startDate) {
       throw new ApiError("End date must be after start date", 400);
+    }
+
+    // Business validations
+    if (body.discountAmount <= 0) {
+      throw new ApiError("Discount amount must be greater than 0", 400);
+    }
+
+    if (body.usageLimit <= 0) {
+      throw new ApiError("Usage limit (quota) must be greater than 0", 400);
     }
 
     // Check if voucher code already exists for this event
@@ -392,5 +415,66 @@ export class EventService {
     });
 
     return updatedEvent;
+  };
+
+  getVouchersByOrganizer = async (userId: number) => {
+    const organizer = await this.getOrCreateOrganizer(userId);
+
+    const vouchers = await this.prisma.voucher.findMany({
+      where: {
+        event: {
+          organizerId: organizer.id,
+        },
+      },
+      include: {
+        event: {
+          select: {
+            id: true,
+            title: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: { id: "desc" },
+    });
+
+    return vouchers;
+  };
+
+  getOrganizerAttendees = async (userId: number) => {
+    const organizer = await this.getOrCreateOrganizer(userId);
+
+    const attendees = await this.prisma.attendee.findMany({
+      where: {
+        event: {
+          organizerId: organizer.id,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+        event: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        ticketType: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return attendees;
   };
 }

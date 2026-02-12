@@ -5,7 +5,7 @@ import { GetEventsQuery } from "../../types/event.js";
 import { CreateEventDto } from "./dto/create-event.dto.js";
 
 export class EventController {
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService) { }
 
   getEvents = async (
     req: Request<{}, {}, {}, GetEventsQuery>,
@@ -81,6 +81,24 @@ export class EventController {
     }
 
     const result = await this.eventService.getOrganizerEvents(req.user.id);
+    res.status(200).send(result);
+  };
+
+  getOrganizerVouchers = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const result = await this.eventService.getVouchersByOrganizer(req.user.id);
+    res.status(200).send(result);
+  };
+
+  getOrganizerAttendees = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const result = await this.eventService.getOrganizerAttendees(req.user.id);
     res.status(200).send(result);
   };
 }

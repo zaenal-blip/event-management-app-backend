@@ -23,17 +23,23 @@ export class EventRouter {
     );
     const authorize = this.authMiddleware.verifyRole;
 
-    // Public routes
-    this.router.get("/", this.eventController.getEvents);
-    this.router.get("/:id", this.eventController.getEventById);
-
-    // Protected routes (organizer only)
+    // Protected routes (organizer only) — must be before /:id to avoid matching "me" as an id
     this.router.get(
       "/me",
       authenticate,
       authorize(["ORGANIZER"]),
       this.eventController.getOrganizerEvents
     );
+    this.router.get(
+      "/me/attendees",
+      authenticate,
+      authorize(["ORGANIZER"]),
+      this.eventController.getOrganizerAttendees
+    );
+
+    // Public routes
+    this.router.get("/", this.eventController.getEvents);
+    this.router.get("/:id", this.eventController.getEventById);
     this.router.post(
       "/",
       authenticate,
