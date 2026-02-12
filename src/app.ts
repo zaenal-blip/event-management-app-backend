@@ -19,6 +19,7 @@ import { TransactionRouter } from "./modules/transaction/transaction.router.js";
 import { ReviewRouter } from "./modules/review/review.router.js";
 import { MediaController } from "./modules/media/media.controller.js";
 import { MediaRouter } from "./modules/media/media.router.js";
+import { VoucherRouter } from "./modules/voucher/voucher.router.js";
 import { AuthMiddleware } from "./middleware/auth.middleware.js";
 import { ValidationMiddleware } from "./middleware/validation.middleware.js";
 
@@ -92,11 +93,13 @@ export class App {
     // media
     const mediaController = new MediaController(cloudinaryService);
     const mediaRouter = new MediaRouter(mediaController);
+    const voucherRouter = new VoucherRouter(eventController, authMiddleware);
 
     // entry point
     this.app.use("/auth", authRouter.getRouter());
     this.app.use("/users", userRouter.getRouter());
     this.app.use("/events", eventRouter.getRouter());
+    this.app.use("/vouchers", voucherRouter.getRouter());
     this.app.use("/", transactionRouter.getRouter()); // Transactions use root-level routes
     this.app.use("/", reviewRouter.getRouter()); // Reviews use root-level routes
     this.app.use("/media", mediaRouter.getRouter());

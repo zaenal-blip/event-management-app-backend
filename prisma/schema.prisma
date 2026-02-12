@@ -152,6 +152,7 @@ model Voucher {
   endDate        DateTime
   usageLimit     Int
   usedCount      Int          @default(0)
+  isActive       Boolean      @default(true)
 
   // Relations
   event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
