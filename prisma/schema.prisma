@@ -1,0 +1,442 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  avatar       String?
+  role         Role          @default(CUSTOMER)
+  referralCode String?       @unique
+  point        Int?          @default(0)
+  phone        String?
+  deletedAt    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  refreshToken RefreshToken?
+
+  // Relations
+  organizer        Organizer?
+  transactions     Transaction[]
+  reviews          Review[]
+  coupons          Coupon[]
+  points           Point[]
+  referredByUserId Int?
+  referredBy       User?           @relation("Referral", fields: [referredByUserId], references: [id])
+  referrals        User[]          @relation("Referral")
+  wishlists        Wishlist[]
+  notifications    Notification[]
+  waitlists        Waitlist[]
+  attendees        Attendee[]
+  passwordResets   PasswordReset[]
+
+  @@map("users")
+}
+
+model PasswordReset {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  tokenHash String
+  expiredAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("refresh_tokens")
+}
+
+model Organizer {
+  id                         Int      @id @default(autoincrement())
+  userId                     Int      @unique
+  name                       String?
+  avatar                     String?
+  bio                        String?
+  contactInfo                String?
+  notificationEmail          String?
+  publicProfileVisible       Boolean  @default(true)
+  defaultMinPurchase         Int      @default(0)
+  defaultVoucherValidityDays Int      @default(30)
+  rating                     Float    @default(0)
+  totalEvents                Int      @default(0)
+  totalReviews               Int      @default(0)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  // Relations
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events Event[]
+
+  @@map("organizers")
+}
+
+model Event {
+  id          Int         @id @default(autoincrement())
+  organizerId Int
+  venueId     Int?
+  categoryId  Int?
+  title       String
+  description String      @db.Text
+  image       String?
+  category    String
+  location    String
+  venue       String
+  startDate   DateTime
+  endDate     DateTime
+  status      EventStatus @default(DRAFT)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  organizer    Organizer     @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  venueRel     Venue?        @relation(fields: [venueId], references: [id])
+  categoryRel  Category?     @relation(fields: [categoryId], references: [id])
+  images       EventImage[]
+  tags         EventTag[]
+  wishlists    Wishlist[]
+  waitlists    Waitlist[]
+  attendees    Attendee[]
+  ticketTypes  TicketType[]
+  vouchers     Voucher[]
+  transactions Transaction[]
+  reviews      Review[]
+
+  @@map("events")
+}
+
+model TicketType {
+  id            Int    @id @default(autoincrement())
+  eventId       Int
+  name          String
+  description   String @db.Text
+  price         Int    @default(0)
+  totalSeat     Int
+  availableSeat Int
+  sold          Int    @default(0)
+
+  // Relations
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  attendees    Attendee[]
+  waitlists    Waitlist[]
+
+  @@map("ticket_types")
+}
+
+model Voucher {
+  id             Int          @id @default(autoincrement())
+  eventId        Int
+  code           String
+  discountAmount Int
+  discountType   DiscountType
+  startDate      DateTime
+  endDate        DateTime
+  usageLimit     Int
+  usedCount      Int          @default(0)
+
+  // Relations
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@unique([eventId, code])
+  @@map("vouchers")
+}
+
+model Coupon {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  code           String   @unique
+  discountAmount Int
+  expiredAt      DateTime
+  isUsed         Boolean  @default(false)
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@map("coupons")
+}
+
+model Point {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  amount      Int
+  description String
+  expiredAt   DateTime?
+  type        PointType
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("points")
+}
+
+model Transaction {
+  id           Int               @id @default(autoincrement())
+  userId       Int
+  eventId      Int
+  ticketTypeId Int
+  voucherId    Int?
+  couponId     Int?
+  ticketQty    Int
+  totalPrice   Int
+  pointsUsed   Int               @default(0)
+  finalPrice   Int
+  status       TransactionStatus @default(WAITING_PAYMENT)
+  paymentProof String?
+  expiredAt    DateTime
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+  voucher    Voucher?   @relation(fields: [voucherId], references: [id], onDelete: SetNull)
+  coupon     Coupon?    @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  review     Review?
+  payment    Payment?
+  attendees  Attendee[]
+
+  @@map("transactions")
+}
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  eventId       Int
+  transactionId Int      @unique
+  rating        Int      @db.SmallInt
+  comment       String   @db.Text
+  createdAt     DateTime @default(now())
+
+  // Relations
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event       Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model Venue {
+  id          Int      @id @default(autoincrement())
+  name        String
+  address     String
+  city        String
+  state       String
+  country     String
+  capacity    Int?
+  description String?
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  events Event[]
+
+  @@map("venues")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  events Event[]
+
+  @@map("categories")
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  transactionId  Int           @unique
+  amount         Int
+  paymentMethod  String // 'credit_card', 'bank_transfer', 'ewallet'
+  paymentGateway String? // 'stripe', 'paypal', etc.
+  gatewayTxnId   String?       @unique
+  status         PaymentStatus @default(PENDING)
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("payments")
+}
+
+model Attendee {
+  id            Int       @id @default(autoincrement())
+  transactionId Int
+  userId        Int
+  eventId       Int
+  ticketTypeId  Int
+  checkedIn     Boolean   @default(false)
+  checkedInAt   DateTime?
+  checkedOutAt  DateTime?
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
+  event       Event       @relation(fields: [eventId], references: [id])
+  ticketType  TicketType  @relation(fields: [ticketTypeId], references: [id])
+
+  @@unique([transactionId, userId])
+  @@map("attendees")
+}
+
+model EventImage {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  url       String
+  altText   String?
+  isMain    Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  // Relations
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("event_images")
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  // Relations
+  events EventTag[]
+
+  @@map("tags")
+}
+
+model EventTag {
+  eventId Int
+  tagId   Int
+
+  // Relations
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tag   Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, tagId])
+  @@map("event_tags")
+}
+
+model Wishlist {
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  eventId Int
+  addedAt DateTime @default(now())
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("wishlists")
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Waitlist {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  eventId      Int
+  ticketTypeId Int?
+  position     Int
+  notified     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  // Relations
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event      Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ticketType TicketType? @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId, ticketTypeId])
+  @@map("waitlists")
+}
+
+enum Role {
+  CUSTOMER
+  ORGANIZER
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum PointType {
+  EARNED
+  USED
+  EXPIRED
+}
+
+enum TransactionStatus {
+  WAITING_PAYMENT
+  WAITING_CONFIRMATION
+  DONE
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  EVENT_REMINDER
+  TICKET_CONFIRMATION
+  PAYMENT_SUCCESS
+  EVENT_UPDATE
+  PROMOTION
+}

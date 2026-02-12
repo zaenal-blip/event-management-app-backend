@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your Password</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .header-icon {
+            width: 64px;
+            height: 64px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 32px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 32px 24px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .message {
+            color: #4a4a4a;
+            margin-bottom: 24px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .reset-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .expiry-notice {
+            background-color: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .expiry-notice p {
+            margin: 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+
+        .link-fallback {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .link-fallback p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .link-fallback code {
+            word-break: break-all;
+            font-size: 12px;
+            color: #4f46e5;
+            background-color: #eef2ff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: block;
+            margin-top: 8px;
+        }
+
+        .security-note {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .footer .brand {
+            font-weight: 600;
+            color: #4f46e5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">🔑</div>
+            <h1>Password Reset Request</h1>
+        </div>
+        <div class="content">
+            <p class="greeting">Hello {{name}},</p>
+            <p class="message">
+                We received a request to reset the password for your Eventku account. 
+                Click the button below to create a new password.
+            </p>
+            
+            <div class="button-container">
+                <a href="{{resetLink}}" class="reset-button">Reset My Password</a>
+            </div>
+
+            <div class="expiry-notice">
+                <p>⏱️ This link will expire in <strong>1 hour</strong> for security reasons.</p>
+            </div>
+
+            <div class="link-fallback">
+                <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+                <code>{{resetLink}}</code>
+            </div>
+
+            <p class="security-note">
+                🔒 If you didn't request a password reset, you can safely ignore this email. 
+                Your password will remain unchanged, and no action is required.
+            </p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message from <span class="brand">Eventku</span>.</p>
+            <p>Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+
+</html>

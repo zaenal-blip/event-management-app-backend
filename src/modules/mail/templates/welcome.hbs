@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Eventku!</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 32px 24px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .message {
+            color: #4a4a4a;
+            margin-bottom: 24px;
+        }
+
+        .features {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .features h3 {
+            margin: 0 0 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .feature-icon {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .feature-text {
+            color: #4a4a4a;
+            font-size: 14px;
+        }
+
+        .referral-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .referral-box h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .referral-code {
+            font-size: 24px;
+            font-weight: 700;
+            color: #78350f;
+            letter-spacing: 2px;
+            font-family: monospace;
+        }
+
+        .referral-note {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #92400e;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .tips-section {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 24px;
+            margin-top: 24px;
+        }
+
+        .tips-section h4 {
+            margin: 0 0 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .tips-list {
+            margin: 0;
+            padding-left: 20px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .tips-list li {
+            margin-bottom: 6px;
+        }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .footer .brand {
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        .social-links {
+            margin-top: 16px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">🎉</div>
+            <h1>Welcome to Eventku!</h1>
+            <p>Your journey to amazing events starts here</p>
+        </div>
+        <div class="content">
+            <p class="greeting">Hello {{name}}! 👋</p>
+            <p class="message">
+                Thank you for joining Eventku! We're thrilled to have you as part of our community.
+                Get ready to discover, attend, and create unforgettable experiences.
+            </p>
+            
+            <div class="features">
+                <h3>✨ What you can do with Eventku</h3>
+                <div class="feature-item">
+                    <span class="feature-icon">🔍</span>
+                    <span class="feature-text">Discover amazing events happening around you</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎫</span>
+                    <span class="feature-text">Book tickets seamlessly with our secure platform</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⭐</span>
+                    <span class="feature-text">Save your favorite events and never miss out</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎁</span>
+                    <span class="feature-text">Earn rewards and discounts through referrals</span>
+                </div>
+            </div>
+
+            <div class="referral-box">
+                <h4>🤝 Your Exclusive Referral Code</h4>
+                <div class="referral-code">{{referralCode}}</div>
+                <p class="referral-note">Share with friends and earn 10,000 points when they sign up!</p>
+            </div>
+
+            <div class="button-container">
+                <a href="{{exploreLink}}" class="cta-button">Explore Events Now</a>
+            </div>
+
+            <div class="tips-section">
+                <h4>💡 Quick Tips to Get Started</h4>
+                <ul class="tips-list">
+                    <li>Complete your profile to get personalized event recommendations</li>
+                    <li>Enable notifications to stay updated on events you love</li>
+                    <li>Follow your favorite organizers to never miss their events</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Welcome aboard! We can't wait to see you at your first event.</p>
+            <p>With love, <span class="brand">The Eventku Team</span> 💜</p>
+            <div class="social-links">
+                <a href="#">Instagram</a> • 
+                <a href="#">Twitter</a> • 
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
