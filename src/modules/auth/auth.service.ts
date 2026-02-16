@@ -5,6 +5,10 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { CreateUserBody } from "../../types/user.js";
 import { MailService } from "../mail/mail.service.js";
+import {
+  calculateUserPointBalance,
+  getExpiringPoints,
+} from "../../utils/point.utils.js";
 
 const generateReferralCode = () => {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -14,21 +18,21 @@ export class AuthService {
   constructor(
     private prisma: PrismaClient,
     private mailService: MailService,
-  ) { }
+  ) {}
 
   register = async (body: CreateUserBody) => {
-    //1. Cek avaibilitas email
+    // 1. Cek avaibilitas email
     const user = await this.prisma.user.findUnique({
       where: { email: body.email },
     });
-    //2. Kalau sudah dipakai throw error
+    // 2. Kalau sudah dipakai throw error
     if (user) {
       throw new ApiError("Email Already Exist", 400);
     }
 
-    //3. Lookup referrer if referralCode is provided
+    // 3. Lookup referrer if referralCode is provided AND role is CUSTOMER
     let referredByUserId: number | null = null;
-    if (body.referralCode) {
+    if (body.role === "CUSTOMER" && body.referralCode) {
       const referrer = await this.prisma.user.findFirst({
         where: { referralCode: body.referralCode },
       });
@@ -36,26 +40,34 @@ export class AuthService {
       if (!referrer) {
         throw new ApiError("Referral code not found", 400);
       }
+
+      // Check if referrer is an organizer
+      if (referrer.role === "ORGANIZER") {
+        throw new ApiError("Referral code not valid", 400);
+      }
+
       referredByUserId = referrer.id;
     }
 
-    //4. Hash Password dari body.password
+    // 4. Hash Password dari body.password
     const hashedPassword = await hashPassword(body.password);
 
-    //5. Generate Unique Referral Code for new user
-    let newReferralCode: string;
-    let isCodeUnique = false;
-    do {
-      newReferralCode = generateReferralCode();
-      const existingCode = await this.prisma.user.findFirst({
-        where: { referralCode: newReferralCode },
-      });
-      if (!existingCode) isCodeUnique = true;
-    } while (!isCodeUnique);
+    // 5. Generate Unique Referral Code ONLY for CUSTOMER
+    let newReferralCode: string | null = null;
+    if (body.role === "CUSTOMER") {
+      let isCodeUnique = false;
+      do {
+        newReferralCode = generateReferralCode();
+        const existingCode = await this.prisma.user.findFirst({
+          where: { referralCode: newReferralCode },
+        });
+        if (!existingCode) isCodeUnique = true;
+      } while (!isCodeUnique);
+    }
 
-    //6. Create user baru
-    //6. Create user baru (dengan transaction untuk organizer)
-    const newUser = await this.prisma.$transaction(async (tx) => {
+    // 6. Execute Transaction (Atomic Operation)
+    const result = await this.prisma.$transaction(async (tx) => {
+      // 6a. Create User
       const user = await tx.user.create({
         data: {
           name: body.name,
@@ -69,12 +81,62 @@ export class AuthService {
         },
       });
 
-      // If role is ORGANIZER, create organizer profile
+      // 6b. Create Organizer Profile if needed
       if (body.role === "ORGANIZER") {
         await tx.organizer.create({
           data: {
             userId: user.id,
-            name: "",
+            name: body.name,
+          },
+        });
+      }
+
+      // 6c. Handle Referral Rewards (Points & Coupon)
+      if (body.role === "CUSTOMER" && referredByUserId && newReferralCode) {
+        // Award points to referrer
+        await tx.point.create({
+          data: {
+            userId: referredByUserId,
+            amount: 10000,
+            description: "Referral Reward",
+            type: "EARNED",
+            expiredAt: new Date(new Date().setMonth(new Date().getMonth() + 3)),
+          },
+        });
+
+        await tx.user.update({
+          where: { id: referredByUserId },
+          data: { point: { increment: 10000 } },
+        });
+
+        // Create coupon for new user
+        let newCouponCode: string;
+        let isCouponUnique = false;
+
+        // Generate unique coupon code (WELCOME-XXXXXX)
+        // Note: For high concurrency, pre-checking inside transaction is safer but might lock
+        // Here we do a best-effort generation inside transaction
+        do {
+          const randomStr = crypto.randomBytes(3).toString("hex").toUpperCase();
+          newCouponCode = `WELCOME-${randomStr}`;
+
+          // Check against DB inside transaction to be sure
+          const existingCoupon = await tx.coupon.findFirst({
+            where: { code: newCouponCode },
+          });
+
+          if (!existingCoupon) isCouponUnique = true;
+        } while (!isCouponUnique);
+
+        const couponExpiredAt = new Date();
+        couponExpiredAt.setMonth(couponExpiredAt.getMonth() + 3);
+
+        await tx.coupon.create({
+          data: {
+            userId: user.id,
+            code: newCouponCode,
+            discountAmount: 50000,
+            expiredAt: couponExpiredAt,
           },
         });
       }
@@ -82,49 +144,39 @@ export class AuthService {
       return user;
     });
 
-    //7. If referred, reward referrer and new user
-    if (referredByUserId) {
-      // Award points to referrer
-      await this.prisma.point.create({
-        data: {
-          userId: referredByUserId,
-          amount: 10000,
-          description: "Referral Reward",
-          type: "EARNED",
-          expiredAt: new Date(new Date().setMonth(new Date().getMonth() + 3)),
-        },
-      });
-
-      await this.prisma.user.update({
-        where: { id: referredByUserId },
-        data: { point: { increment: 10000 } },
-      });
-
-      // Create coupon for new user
-      await this.prisma.coupon.create({
-        data: {
-          userId: newUser.id,
-          code: `REF-${newReferralCode}`,
-          discountAmount: 50000,
-          expiredAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-        },
-      });
+    // 7. Send Welcome Email (After Transaction Commits)
+    // If email fails, user is still created. This is acceptable.
+    // We wrap in try-catch to prevent crashing the response.
+    try {
+      const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+      if (result.role === "ORGANIZER") {
+        await this.mailService.sendEmail(
+          result.email,
+          "Welcome to Eventku – Your Organizer Account is Ready",
+          "welcome-organizer",
+          {
+            name: result.name,
+            dashboardLink: `${baseUrl}/dashboard`,
+            year: new Date().getFullYear(),
+          },
+        );
+      } else {
+        await this.mailService.sendEmail(
+          result.email,
+          "Welcome to Eventku! 🎉",
+          "welcome",
+          {
+            name: result.name,
+            referralCode: result.referralCode,
+            exploreLink: `${baseUrl}/events`,
+          },
+        );
+      }
+    } catch (error) {
+      console.error("Failed to send welcome email:", error);
+      // We do NOT throw here, as registration was successful
     }
 
-    //8. Send welcome email
-    const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-    await this.mailService.sendEmail(
-      newUser.email,
-      "Welcome to Eventku! 🎉",
-      "welcome",
-      {
-        name: newUser.name,
-        referralCode: newReferralCode,
-        exploreLink: `${baseUrl}/events`,
-      },
-    );
-
-    //9. Return Message Register Success
     return { message: "Register Success" };
   };
 
@@ -216,6 +268,17 @@ export class AuthService {
   };
 
   getProfile = async (userId: number) => {
+    // 1. Calculate actual valid points
+    const validPoints = await calculateUserPointBalance(userId, this.prisma);
+
+    // 2. Update user profile if different (Sync DB)
+    // We do this so other simple queries can still rely on user.point for approximation
+    // But critical logic should always calculate.
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { point: validPoints },
+    });
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId, deletedAt: null },
       omit: { password: true },
@@ -231,7 +294,20 @@ export class AuthService {
       throw new ApiError("User not found", 404);
     }
 
-    return user;
+    // 3. Get expiring points warning
+    const { expiringAmount, nearestExpiryDate } = await getExpiringPoints(
+      userId,
+      this.prisma,
+    );
+
+    // Ensure returned user has the calculated points (in case update race condition, though unlikely)
+    // We append the extra fields for the frontend warning
+    return {
+      ...user,
+      point: validPoints, // Ensure this uses the calculated valid balance
+      pointsExpiringSoon: expiringAmount,
+      pointsExpiryDate: nearestExpiryDate,
+    };
   };
 
   /**

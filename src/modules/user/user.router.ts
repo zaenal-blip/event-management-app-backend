@@ -15,6 +15,11 @@ export class UserRouter {
 
   private initRoutes = () => {
     this.router.get("/", this.userController.getUsers);
+    this.router.get(
+      "/referrals",
+      this.authMiddleware.verifyToken(process.env.JWT_SECRET!),
+      this.userController.getReferralRewards,
+    );
     this.router.get("/:id", this.userController.getUser);
     this.router.post("/", this.userController.createUser);
     this.router.patch("/:id", this.userController.updateUser);

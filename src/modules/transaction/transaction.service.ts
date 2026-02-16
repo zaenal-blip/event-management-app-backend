@@ -5,6 +5,7 @@ import {
   UploadPaymentProofBody,
 } from "../../types/transaction.js";
 import { sendEmail } from "../../lib/mail.js";
+import { calculateUserPointBalance } from "../../utils/point.utils.js";
 
 export class TransactionService {
   constructor(private prisma: PrismaClient) {}
@@ -38,7 +39,7 @@ export class TransactionService {
       // Prisma doesn't support "FOR UPDATE" natively yet
       console.log(`[DEBUG] Locking ticketType ${ticketTypeId}`);
       const ticketTypes = await tx.$queryRaw<any[]>`
-        SELECT * FROM "backend"."ticket_types"
+        SELECT * FROM "ticket_types"
         WHERE id = ${ticketTypeId}
         FOR UPDATE
       `;
@@ -122,6 +123,19 @@ export class TransactionService {
           throw new ApiError("Invalid or expired coupon", 400);
         }
 
+        // Check if user is organizer and try to use coupon
+        const userWithRole = await tx.user.findUnique({
+          where: { id: userId },
+          select: { role: true },
+        });
+
+        if (userWithRole?.role === "ORGANIZER") {
+          throw new ApiError(
+            "Referral reward is only available for customers",
+            400,
+          );
+        }
+
         couponId = coupon.id;
         couponDiscount = Math.min(
           coupon.discountAmount,
@@ -138,7 +152,19 @@ export class TransactionService {
         throw new ApiError("User not found", 404);
       }
 
-      const availablePoints = user.point || 0;
+      // Validate points using FIFO logic (re-calculating for accuracy)
+      const availablePoints = await calculateUserPointBalance(
+        userId,
+        tx as any,
+      );
+
+      if (pointsToUse > availablePoints) {
+        throw new ApiError(
+          `Insufficient valid points. Available: ${availablePoints}`,
+          400,
+        );
+      }
+
       const pointsToDeduct = Math.min(
         pointsToUse,
         availablePoints,
@@ -574,33 +600,75 @@ export class TransactionService {
     return updatedTransaction;
   };
 
-  getMyTransactions = async (userId: number) => {
-    const transactions = await this.prisma.transaction.findMany({
-      where: { userId },
-      include: {
-        event: {
-          include: {
-            organizer: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    name: true,
-                    avatar: true,
-                  },
-                },
-              },
+  getMyTransactions = async (
+    userId: number,
+    page: number = 1,
+    take: number = 10,
+  ) => {
+    // 1. Auto-expire: find WAITING_PAYMENT transactions that are past their deadline
+    const expiredWaiting = await this.prisma.transaction.findMany({
+      where: {
+        userId,
+        status: "WAITING_PAYMENT",
+        expiredAt: { lt: new Date() },
+      },
+    });
+
+    // Rollback and mark each as EXPIRED
+    for (const txn of expiredWaiting) {
+      await this.rollbackTransaction(txn.id);
+      await this.prisma.transaction.update({
+        where: { id: txn.id },
+        data: { status: "EXPIRED" },
+      });
+    }
+
+    // 2. Fetch paginated transactions
+    const where = { userId };
+
+    const [transactions, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where,
+        include: {
+          event: {
+            select: {
+              title: true,
+              image: true,
+              startDate: true,
+            },
+          },
+          ticketType: {
+            select: {
+              name: true,
             },
           },
         },
-        ticketType: true,
-        voucher: true,
-        coupon: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * take,
+        take,
+      }),
+      this.prisma.transaction.count({ where }),
+    ]);
 
-    return transactions;
+    // 3. DTO transformation
+    const data = transactions.map((txn) => ({
+      id: txn.id,
+      eventTitle: txn.event.title,
+      eventImage: txn.event.image,
+      eventStartDate: txn.event.startDate,
+      ticketTypeName: txn.ticketType.name,
+      ticketQty: txn.ticketQty,
+      totalPrice: txn.totalPrice,
+      finalPrice: txn.finalPrice,
+      status: txn.status,
+      createdAt: txn.createdAt,
+      expiredAt: txn.expiredAt,
+    }));
+
+    return {
+      data,
+      meta: { page, take, total },
+    };
   };
 
   getOrganizerTransactions = async (userId: number) => {
@@ -643,27 +711,78 @@ export class TransactionService {
   };
 
   getTransactionById = async (transactionId: number, userId: number) => {
+    // Auto-expire check for this specific transaction
+    const existing = await this.prisma.transaction.findUnique({
+      where: { id: transactionId },
+      select: { status: true, expiredAt: true },
+    });
+
+    if (
+      existing &&
+      existing.status === "WAITING_PAYMENT" &&
+      existing.expiredAt < new Date()
+    ) {
+      await this.rollbackTransaction(transactionId);
+      await this.prisma.transaction.update({
+        where: { id: transactionId },
+        data: { status: "EXPIRED" },
+      });
+    }
+
     const transaction = await this.prisma.transaction.findUnique({
       where: { id: transactionId },
       include: {
         event: {
-          include: {
-            organizer: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    name: true,
-                    avatar: true,
-                  },
-                },
+          select: {
+            title: true,
+            image: true,
+            startDate: true,
+            endDate: true,
+            location: true,
+            venue: true,
+            organizerId: true,
+          },
+        },
+        ticketType: {
+          select: {
+            name: true,
+            price: true,
+          },
+        },
+        voucher: {
+          select: {
+            code: true,
+            discountAmount: true,
+            discountType: true,
+          },
+        },
+        coupon: {
+          select: {
+            code: true,
+            discountAmount: true,
+          },
+        },
+        payment: {
+          select: {
+            paymentMethod: true,
+            status: true,
+            paidAt: true,
+          },
+        },
+        attendees: {
+          select: {
+            id: true,
+            userId: true,
+            checkedIn: true,
+            checkedInAt: true,
+            user: {
+              select: {
+                name: true,
+                email: true,
               },
             },
           },
         },
-        ticketType: true,
-        voucher: true,
-        coupon: true,
       },
     });
 
@@ -686,7 +805,24 @@ export class TransactionService {
       );
     }
 
-    return transaction;
+    // DTO transformation
+    return {
+      id: transaction.id,
+      event: transaction.event,
+      ticketType: transaction.ticketType,
+      ticketQty: transaction.ticketQty,
+      totalPrice: transaction.totalPrice,
+      voucher: transaction.voucher,
+      coupon: transaction.coupon,
+      pointsUsed: transaction.pointsUsed,
+      finalPrice: transaction.finalPrice,
+      status: transaction.status,
+      paymentProof: transaction.paymentProof,
+      payment: transaction.payment,
+      attendees: transaction.attendees,
+      createdAt: transaction.createdAt,
+      expiredAt: transaction.expiredAt,
+    };
   };
 
   // Private helper method for rollback
@@ -738,13 +874,17 @@ export class TransactionService {
           },
         });
 
-        // Record point restoration
-        await tx.point.create({
-          data: {
+        // Delete the USED point record instead of creating a new EARNED one.
+        // Creating a new EARNED record causes double-counting in FIFO balance
+        // calculation because the original earned points still exist.
+        await tx.point.deleteMany({
+          where: {
             userId: transaction.userId,
-            amount: transaction.pointsUsed,
-            description: `Restored from cancelled transaction #${transactionId}`,
-            type: "EARNED",
+            type: "USED",
+            description: {
+              contains: `transaction on event`,
+            },
+            amount: -transaction.pointsUsed,
           },
         });
       }

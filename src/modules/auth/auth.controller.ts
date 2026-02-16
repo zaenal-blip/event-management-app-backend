@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service.js";
 import { cookieOptions } from "../../config/cookie.js";
 
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   register = async (req: Request, res: Response) => {
     const body = req.body;
@@ -17,7 +17,7 @@ export class AuthController {
 
     res.cookie("accessToken", result.accessToken, cookieOptions);
     res.cookie("refreshToken", result.refreshToken, cookieOptions);
-    const { refreshToken, ...response } = result;
+    const { refreshToken, accessToken, ...response } = result;
     res.status(200).send(response);
   };
 
