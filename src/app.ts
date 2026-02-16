@@ -10,6 +10,7 @@ import { ReviewService } from "./modules/review/review.service.js";
 import { AuthController } from "./modules/auth/auth.controller.js";
 import { UserController } from "./modules/user/user.controller.js";
 import { EventController } from "./modules/event/event.controller.js";
+import { ReferralService } from "./modules/user/referral.service.js";
 import { TransactionController } from "./modules/transaction/transaction.controller.js";
 import { ReviewController } from "./modules/review/review.controller.js";
 import { AuthRouter } from "./modules/auth/auth.router.js";
@@ -61,13 +62,14 @@ export class App {
       cloudinaryService,
       mailService,
     );
+    const referralService = new ReferralService(prismaClient);
     const eventService = new EventService(prismaClient);
     const transactionService = new TransactionService(prismaClient);
     const reviewService = new ReviewService(prismaClient);
 
     // controllers
     const authController = new AuthController(authService);
-    const userController = new UserController(userService);
+    const userController = new UserController(userService, referralService);
     const eventController = new EventController(eventService);
     const transactionController = new TransactionController(transactionService);
     const reviewController = new ReviewController(reviewService);

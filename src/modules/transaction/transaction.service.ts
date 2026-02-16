@@ -5,6 +5,7 @@ import {
   UploadPaymentProofBody,
 } from "../../types/transaction.js";
 import { sendEmail } from "../../lib/mail.js";
+import { calculateUserPointBalance } from "../../utils/point.utils.js";
 
 export class TransactionService {
   constructor(private prisma: PrismaClient) {}
@@ -38,7 +39,7 @@ export class TransactionService {
       // Prisma doesn't support "FOR UPDATE" natively yet
       console.log(`[DEBUG] Locking ticketType ${ticketTypeId}`);
       const ticketTypes = await tx.$queryRaw<any[]>`
-        SELECT * FROM "backend"."ticket_types"
+        SELECT * FROM "ticket_types"
         WHERE id = ${ticketTypeId}
         FOR UPDATE
       `;
@@ -122,6 +123,19 @@ export class TransactionService {
           throw new ApiError("Invalid or expired coupon", 400);
         }
 
+        // Check if user is organizer and try to use coupon
+        const userWithRole = await tx.user.findUnique({
+          where: { id: userId },
+          select: { role: true },
+        });
+
+        if (userWithRole?.role === "ORGANIZER") {
+          throw new ApiError(
+            "Referral reward is only available for customers",
+            400,
+          );
+        }
+
         couponId = coupon.id;
         couponDiscount = Math.min(
           coupon.discountAmount,
@@ -138,7 +152,19 @@ export class TransactionService {
         throw new ApiError("User not found", 404);
       }
 
-      const availablePoints = user.point || 0;
+      // Validate points using FIFO logic (re-calculating for accuracy)
+      const availablePoints = await calculateUserPointBalance(
+        userId,
+        tx as any,
+      );
+
+      if (pointsToUse > availablePoints) {
+        throw new ApiError(
+          `Insufficient valid points. Available: ${availablePoints}`,
+          400,
+        );
+      }
+
       const pointsToDeduct = Math.min(
         pointsToUse,
         availablePoints,

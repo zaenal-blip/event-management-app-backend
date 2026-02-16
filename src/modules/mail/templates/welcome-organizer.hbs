@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Welcome to Eventku - Organizer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      color: #333;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: #fff;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 10px 0 0;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .feature-item {
+      flex: 1 1 45%;
+      background: #f8fbff;
+      border: 1px solid #e1e8ed;
+      border-radius: 8px;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .feature-item strong {
+      display: block;
+      color: #007bff;
+      margin-bottom: 5px;
+    }
+
+    .btn-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #007bff;
+      color: #fff;
+      padding: 14px 30px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 123, 255, 0.4);
+    }
+
+    .footer {
+      background: #f1f3f5;
+      padding: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #6c757d;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Welcome to Eventku!</h1>
+      <p>Your journey as a top-tier Organizer starts here.</p>
+    </div>
+    <div class="content">
+      <p>Dear {{name}},</p>
+      <p>Congratulations! Your Organizer account has been successfully created. We are excited to support you in creating memorable experiences.</p>
+
+      <p>Your specialized toolkit is ready. Here is what you can do:</p>
+
+      <div class="features">
+        <div class="feature-item">
+          <strong>📅 Create Events</strong>
+          Launch and publish your events in minutes.
+        </div>
+        <div class="feature-item">
+          <strong>📊 Track Sales</strong>
+          Real-time analytics on ticket sales and revenue.
+        </div>
+        <div class="feature-item">
+          <strong>👥 Manage Attendees</strong>
+          Easy check-ins and guest list management.
+        </div>
+        <div class="feature-item">
+          <strong>🎫 Custom Tickets</strong>
+          Create various ticket types and vouchers.
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <a href="{{dashboardLink}}" class="btn">Start Creating Events</a>
+      </div>
+
+      <p>Need help getting started? Reply to this email or visit our Help Center.</p>
+
+      <p>Best regards,<br>The Eventku Team</p>
+    </div>
+    <div class="footer">
+      <p>&copy; {{year}} Eventku. All rights reserved.</p>
+      <p>
+        <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

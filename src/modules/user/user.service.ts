@@ -3,6 +3,7 @@ import { PaginationQueryParams } from "../../types/pagination.js";
 import { CreateUserBody } from "../../types/user.js";
 import { ApiError } from "../../utils/api-error.js";
 import { comparePassword, hashPassword } from "../../lib/argon.js";
+import { calculateUserPointBalance } from "../../utils/point.utils.js";
 import { CloudinaryService } from "../cloudinary/cloudinary.service.js";
 import { MailService } from "../mail/mail.service.js";
 
@@ -51,6 +52,24 @@ export class UserService {
     });
 
     if (!user) throw new ApiError("User not found", 404);
+
+    // Sync points for CUSTOMER
+    if (user.role === "CUSTOMER") {
+      const calculatedPoints = await calculateUserPointBalance(
+        user.id,
+        this.prisma,
+      );
+
+      if (calculatedPoints !== user.point) {
+        // Update the user's point in the database to match the calculated balance
+        const updatedUser = await this.prisma.user.update({
+          where: { id },
+          data: { point: calculatedPoints },
+          omit: { password: true },
+        });
+        return updatedUser;
+      }
+    }
 
     return user;
   };

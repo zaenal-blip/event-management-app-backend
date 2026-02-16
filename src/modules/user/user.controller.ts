@@ -1,8 +1,30 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service.js";
+import { ReferralService } from "./referral.service.js";
+import { AuthRequest } from "../../middleware/auth.middleware.js";
 
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private referralService: ReferralService,
+  ) {}
+
+  getReferralRewards = async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    const role = req.user?.role;
+
+    // Additional safety check, though middleware should handle user existence
+    if (!userId || !role) {
+      res.status(401).send({ message: "Unauthorized" });
+      return;
+    }
+
+    const result = await this.referralService.getReferralRewardsData(
+      userId,
+      role,
+    );
+    res.status(200).send(result);
+  };
 
   getUsers = async (req: Request, res: Response) => {
     const query = {
