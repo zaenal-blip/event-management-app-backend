@@ -874,13 +874,17 @@ export class TransactionService {
           },
         });
 
-        // Record point restoration
-        await tx.point.create({
-          data: {
+        // Delete the USED point record instead of creating a new EARNED one.
+        // Creating a new EARNED record causes double-counting in FIFO balance
+        // calculation because the original earned points still exist.
+        await tx.point.deleteMany({
+          where: {
             userId: transaction.userId,
-            amount: transaction.pointsUsed,
-            description: `Restored from cancelled transaction #${transactionId}`,
-            type: "EARNED",
+            type: "USED",
+            description: {
+              contains: `transaction on event`,
+            },
+            amount: -transaction.pointsUsed,
           },
         });
       }

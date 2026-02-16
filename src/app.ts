@@ -26,6 +26,9 @@ import { ValidationMiddleware } from "./middleware/validation.middleware.js";
 import { DashboardService } from "./modules/dashboard/dashboard.service.js";
 import { DashboardController } from "./modules/dashboard/dashboard.controller.js";
 import { DashboardRouter } from "./modules/dashboard/dashboard.router.js";
+import { OrganizerService } from "./modules/organizer/organizer.service.js";
+import { OrganizerController } from "./modules/organizer/organizer.controller.js";
+import { OrganizerRouter } from "./modules/organizer/organizer.router.js";
 
 import { CloudinaryService } from "./modules/cloudinary/cloudinary.service.js";
 import { MailService } from "./modules/mail/mail.service.js";
@@ -70,6 +73,7 @@ export class App {
     const transactionService = new TransactionService(prismaClient);
     const reviewService = new ReviewService(prismaClient);
     const dashboardService = new DashboardService(prismaClient);
+    const organizerService = new OrganizerService(prismaClient);
 
     // controllers
     const authController = new AuthController(authService);
@@ -81,6 +85,7 @@ export class App {
       dashboardService,
       prismaClient,
     );
+    const organizerController = new OrganizerController(organizerService);
 
     // middlewares
     const authMiddleware = new AuthMiddleware();
@@ -108,6 +113,10 @@ export class App {
       dashboardController,
       authMiddleware,
     );
+    const organizerRouter = new OrganizerRouter(
+      organizerController,
+      authMiddleware,
+    );
 
     // entry point
     this.app.use("/auth", authRouter.getRouter());
@@ -118,6 +127,7 @@ export class App {
     this.app.use("/", reviewRouter.getRouter()); // Reviews use root-level routes
     this.app.use("/media", mediaRouter.getRouter());
     this.app.use("/dashboard", dashboardRouter.getRouter());
+    this.app.use("/organizer", organizerRouter.getRouter());
 
     // serve uploaded files
     this.app.use("/uploads", express.static("uploads"));
