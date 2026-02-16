@@ -3,7 +3,7 @@ import { TransactionService } from "./transaction.service.js";
 import { AuthRequest } from "../../middleware/auth.middleware.js";
 
 export class TransactionController {
-  constructor(private transactionService: TransactionService) { }
+  constructor(private transactionService: TransactionService) {}
 
   createTransaction = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
@@ -14,7 +14,7 @@ export class TransactionController {
     const result = await this.transactionService.createTransaction(
       req.user.id,
       eventId,
-      req.body
+      req.body,
     );
     res.status(201).send(result);
   };
@@ -28,7 +28,7 @@ export class TransactionController {
     const result = await this.transactionService.uploadPaymentProof(
       transactionId,
       req.user.id,
-      req.body
+      req.body,
     );
     res.status(200).send(result);
   };
@@ -41,7 +41,7 @@ export class TransactionController {
     const transactionId = Number(req.params.id);
     const result = await this.transactionService.confirmTransaction(
       transactionId,
-      req.user.id
+      req.user.id,
     );
     res.status(200).send(result);
   };
@@ -54,7 +54,7 @@ export class TransactionController {
     const transactionId = Number(req.params.id);
     const result = await this.transactionService.rejectTransaction(
       transactionId,
-      req.user.id
+      req.user.id,
     );
     res.status(200).send(result);
   };
@@ -67,7 +67,7 @@ export class TransactionController {
     const transactionId = Number(req.params.id);
     const result = await this.transactionService.cancelTransaction(
       transactionId,
-      req.user.id
+      req.user.id,
     );
     res.status(200).send(result);
   };
@@ -77,7 +77,14 @@ export class TransactionController {
       return res.status(401).send({ message: "Unauthorized" });
     }
 
-    const result = await this.transactionService.getMyTransactions(req.user.id);
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const take = Math.min(50, Math.max(1, Number(req.query.take) || 10));
+
+    const result = await this.transactionService.getMyTransactions(
+      req.user.id,
+      page,
+      take,
+    );
     res.status(200).send(result);
   };
 
@@ -87,7 +94,7 @@ export class TransactionController {
     }
 
     const result = await this.transactionService.getOrganizerTransactions(
-      req.user.id
+      req.user.id,
     );
     res.status(200).send(result);
   };
@@ -100,7 +107,7 @@ export class TransactionController {
     const transactionId = Number(req.params.id);
     const result = await this.transactionService.getTransactionById(
       transactionId,
-      req.user.id
+      req.user.id,
     );
     res.status(200).send(result);
   };

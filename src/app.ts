@@ -23,6 +23,9 @@ import { MediaRouter } from "./modules/media/media.router.js";
 import { VoucherRouter } from "./modules/voucher/voucher.router.js";
 import { AuthMiddleware } from "./middleware/auth.middleware.js";
 import { ValidationMiddleware } from "./middleware/validation.middleware.js";
+import { DashboardService } from "./modules/dashboard/dashboard.service.js";
+import { DashboardController } from "./modules/dashboard/dashboard.controller.js";
+import { DashboardRouter } from "./modules/dashboard/dashboard.router.js";
 
 import { CloudinaryService } from "./modules/cloudinary/cloudinary.service.js";
 import { MailService } from "./modules/mail/mail.service.js";
@@ -66,6 +69,7 @@ export class App {
     const eventService = new EventService(prismaClient);
     const transactionService = new TransactionService(prismaClient);
     const reviewService = new ReviewService(prismaClient);
+    const dashboardService = new DashboardService(prismaClient);
 
     // controllers
     const authController = new AuthController(authService);
@@ -73,6 +77,10 @@ export class App {
     const eventController = new EventController(eventService);
     const transactionController = new TransactionController(transactionService);
     const reviewController = new ReviewController(reviewService);
+    const dashboardController = new DashboardController(
+      dashboardService,
+      prismaClient,
+    );
 
     // middlewares
     const authMiddleware = new AuthMiddleware();
@@ -96,6 +104,10 @@ export class App {
     const mediaController = new MediaController(cloudinaryService);
     const mediaRouter = new MediaRouter(mediaController);
     const voucherRouter = new VoucherRouter(eventController, authMiddleware);
+    const dashboardRouter = new DashboardRouter(
+      dashboardController,
+      authMiddleware,
+    );
 
     // entry point
     this.app.use("/auth", authRouter.getRouter());
@@ -105,6 +117,7 @@ export class App {
     this.app.use("/", transactionRouter.getRouter()); // Transactions use root-level routes
     this.app.use("/", reviewRouter.getRouter()); // Reviews use root-level routes
     this.app.use("/media", mediaRouter.getRouter());
+    this.app.use("/dashboard", dashboardRouter.getRouter());
 
     // serve uploaded files
     this.app.use("/uploads", express.static("uploads"));
