@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { NotificationService } from "./notification.service.js";
 import { AuthRequest } from "../../middleware/auth.middleware.js";
+import { NotificationService } from "./notification.service.js";
 
 export class NotificationController {
   constructor(private notificationService: NotificationService) {}

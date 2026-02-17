@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { NotificationController } from "./notification.controller.js";
 import { AuthMiddleware } from "../../middleware/auth.middleware.js";
+import { NotificationController } from "./notification.controller.js";
 
 export class NotificationRouter {
   private router: Router;
