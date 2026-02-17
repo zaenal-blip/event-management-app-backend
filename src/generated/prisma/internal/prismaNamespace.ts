@@ -2172,7 +2172,8 @@ export const TransactionScalarFieldEnum = {
   paymentProof: 'paymentProof',
   expiredAt: 'expiredAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  rejectionReason: 'rejectionReason'
 } as const
 
 export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]

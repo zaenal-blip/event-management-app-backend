@@ -14,24 +14,28 @@ export class NotificationRouter {
   }
 
   private initRoutes = () => {
+    const authenticate = this.authMiddleware.verifyToken(
+      process.env.JWT_SECRET || "secret",
+    );
+
     this.router.get(
       "/",
-      this.authMiddleware.verifyToken,
+      authenticate,
       this.notificationController.getNotifications,
     );
     this.router.get(
       "/unread-count",
-      this.authMiddleware.verifyToken,
+      authenticate,
       this.notificationController.getUnreadCount,
     );
     this.router.put(
       "/mark-all-read",
-      this.authMiddleware.verifyToken,
+      authenticate,
       this.notificationController.markAllAsRead,
     );
     this.router.put(
       "/:id/read",
-      this.authMiddleware.verifyToken,
+      authenticate,
       this.notificationController.markAsRead,
     );
   };

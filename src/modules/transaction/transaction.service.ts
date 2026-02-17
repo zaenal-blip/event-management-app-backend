@@ -609,6 +609,7 @@ export class TransactionService {
       where: { id: transactionId },
       data: {
         status: "REJECTED",
+        rejectionReason: reason,
       },
       include: {
         event: {
@@ -827,6 +828,7 @@ export class TransactionService {
       totalPrice: txn.totalPrice,
       finalPrice: txn.finalPrice,
       status: txn.status,
+      rejectionReason: txn.rejectionReason,
       createdAt: txn.createdAt,
       expiredAt: txn.expiredAt,
     }));
@@ -987,6 +989,7 @@ export class TransactionService {
       paymentProof: transaction.paymentProof,
       payment: transaction.payment,
       attendees: transaction.attendees,
+      rejectionReason: transaction.rejectionReason,
       createdAt: transaction.createdAt,
       expiredAt: transaction.expiredAt,
     };

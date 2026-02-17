@@ -68,6 +68,7 @@ export type TransactionMinAggregateOutputType = {
   expiredAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  rejectionReason: string | null
 }
 
 export type TransactionMaxAggregateOutputType = {
@@ -86,6 +87,7 @@ export type TransactionMaxAggregateOutputType = {
   expiredAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  rejectionReason: string | null
 }
 
 export type TransactionCountAggregateOutputType = {
@@ -104,6 +106,7 @@ export type TransactionCountAggregateOutputType = {
   expiredAt: number
   createdAt: number
   updatedAt: number
+  rejectionReason: number
   _all: number
 }
 
@@ -150,6 +153,7 @@ export type TransactionMinAggregateInputType = {
   expiredAt?: true
   createdAt?: true
   updatedAt?: true
+  rejectionReason?: true
 }
 
 export type TransactionMaxAggregateInputType = {
@@ -168,6 +172,7 @@ export type TransactionMaxAggregateInputType = {
   expiredAt?: true
   createdAt?: true
   updatedAt?: true
+  rejectionReason?: true
 }
 
 export type TransactionCountAggregateInputType = {
@@ -186,6 +191,7 @@ export type TransactionCountAggregateInputType = {
   expiredAt?: true
   createdAt?: true
   updatedAt?: true
+  rejectionReason?: true
   _all?: true
 }
 
@@ -291,6 +297,7 @@ export type TransactionGroupByOutputType = {
   expiredAt: Date
   createdAt: Date
   updatedAt: Date
+  rejectionReason: string | null
   _count: TransactionCountAggregateOutputType | null
   _avg: TransactionAvgAggregateOutputType | null
   _sum: TransactionSumAggregateOutputType | null
@@ -332,6 +339,7 @@ export type TransactionWhereInput = {
   expiredAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
+  rejectionReason?: Prisma.StringNullableFilter<"Transaction"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   ticketType?: Prisma.XOR<Prisma.TicketTypeScalarRelationFilter, Prisma.TicketTypeWhereInput>
@@ -358,6 +366,7 @@ export type TransactionOrderByWithRelationInput = {
   expiredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   event?: Prisma.EventOrderByWithRelationInput
   ticketType?: Prisma.TicketTypeOrderByWithRelationInput
@@ -387,6 +396,7 @@ export type TransactionWhereUniqueInput = Prisma.AtLeast<{
   expiredAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
+  rejectionReason?: Prisma.StringNullableFilter<"Transaction"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   ticketType?: Prisma.XOR<Prisma.TicketTypeScalarRelationFilter, Prisma.TicketTypeWhereInput>
@@ -413,6 +423,7 @@ export type TransactionOrderByWithAggregationInput = {
   expiredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TransactionCountOrderByAggregateInput
   _avg?: Prisma.TransactionAvgOrderByAggregateInput
   _max?: Prisma.TransactionMaxOrderByAggregateInput
@@ -439,6 +450,7 @@ export type TransactionScalarWhereWithAggregatesInput = {
   expiredAt?: Prisma.DateTimeWithAggregatesFilter<"Transaction"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Transaction"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Transaction"> | string | null
 }
 
 export type TransactionCreateInput = {
@@ -451,6 +463,7 @@ export type TransactionCreateInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
@@ -477,6 +490,7 @@ export type TransactionUncheckedCreateInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
@@ -492,6 +506,7 @@ export type TransactionUpdateInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
@@ -518,6 +533,7 @@ export type TransactionUncheckedUpdateInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
@@ -539,6 +555,7 @@ export type TransactionCreateManyInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
 }
 
 export type TransactionUpdateManyMutationInput = {
@@ -551,6 +568,7 @@ export type TransactionUpdateManyMutationInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransactionUncheckedUpdateManyInput = {
@@ -569,6 +587,7 @@ export type TransactionUncheckedUpdateManyInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransactionListRelationFilter = {
@@ -597,6 +616,7 @@ export type TransactionCountOrderByAggregateInput = {
   expiredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
 }
 
 export type TransactionAvgOrderByAggregateInput = {
@@ -628,6 +648,7 @@ export type TransactionMaxOrderByAggregateInput = {
   expiredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
 }
 
 export type TransactionMinOrderByAggregateInput = {
@@ -646,6 +667,7 @@ export type TransactionMinOrderByAggregateInput = {
   expiredAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
 }
 
 export type TransactionSumOrderByAggregateInput = {
@@ -932,6 +954,7 @@ export type TransactionCreateWithoutUserInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
@@ -956,6 +979,7 @@ export type TransactionUncheckedCreateWithoutUserInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
@@ -1006,6 +1030,7 @@ export type TransactionScalarWhereInput = {
   expiredAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
+  rejectionReason?: Prisma.StringNullableFilter<"Transaction"> | string | null
 }
 
 export type TransactionCreateWithoutEventInput = {
@@ -1018,6 +1043,7 @@ export type TransactionCreateWithoutEventInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
@@ -1042,6 +1068,7 @@ export type TransactionUncheckedCreateWithoutEventInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
@@ -1083,6 +1110,7 @@ export type TransactionCreateWithoutTicketTypeInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
@@ -1107,6 +1135,7 @@ export type TransactionUncheckedCreateWithoutTicketTypeInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
@@ -1148,6 +1177,7 @@ export type TransactionCreateWithoutVoucherInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
@@ -1172,6 +1202,7 @@ export type TransactionUncheckedCreateWithoutVoucherInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
@@ -1213,6 +1244,7 @@ export type TransactionCreateWithoutCouponInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
@@ -1237,6 +1269,7 @@ export type TransactionUncheckedCreateWithoutCouponInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
@@ -1278,6 +1311,7 @@ export type TransactionCreateWithoutReviewInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
@@ -1303,6 +1337,7 @@ export type TransactionUncheckedCreateWithoutReviewInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1333,6 +1368,7 @@ export type TransactionUpdateWithoutReviewInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
@@ -1358,6 +1394,7 @@ export type TransactionUncheckedUpdateWithoutReviewInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -1372,6 +1409,7 @@ export type TransactionCreateWithoutPaymentInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
@@ -1397,6 +1435,7 @@ export type TransactionUncheckedCreateWithoutPaymentInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1427,6 +1466,7 @@ export type TransactionUpdateWithoutPaymentInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
@@ -1452,6 +1492,7 @@ export type TransactionUncheckedUpdateWithoutPaymentInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -1466,6 +1507,7 @@ export type TransactionCreateWithoutAttendeesInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   user: Prisma.UserCreateNestedOneWithoutTransactionsInput
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
@@ -1491,6 +1533,7 @@ export type TransactionUncheckedCreateWithoutAttendeesInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
 }
@@ -1521,6 +1564,7 @@ export type TransactionUpdateWithoutAttendeesInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
@@ -1546,6 +1590,7 @@ export type TransactionUncheckedUpdateWithoutAttendeesInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
 }
@@ -1565,6 +1610,7 @@ export type TransactionCreateManyUserInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
 }
 
 export type TransactionUpdateWithoutUserInput = {
@@ -1577,6 +1623,7 @@ export type TransactionUpdateWithoutUserInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
@@ -1601,6 +1648,7 @@ export type TransactionUncheckedUpdateWithoutUserInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
@@ -1621,6 +1669,7 @@ export type TransactionUncheckedUpdateManyWithoutUserInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransactionCreateManyEventInput = {
@@ -1638,6 +1687,7 @@ export type TransactionCreateManyEventInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
 }
 
 export type TransactionUpdateWithoutEventInput = {
@@ -1650,6 +1700,7 @@ export type TransactionUpdateWithoutEventInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
@@ -1674,6 +1725,7 @@ export type TransactionUncheckedUpdateWithoutEventInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
@@ -1694,6 +1746,7 @@ export type TransactionUncheckedUpdateManyWithoutEventInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransactionCreateManyTicketTypeInput = {
@@ -1711,6 +1764,7 @@ export type TransactionCreateManyTicketTypeInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
 }
 
 export type TransactionUpdateWithoutTicketTypeInput = {
@@ -1723,6 +1777,7 @@ export type TransactionUpdateWithoutTicketTypeInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
@@ -1747,6 +1802,7 @@ export type TransactionUncheckedUpdateWithoutTicketTypeInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
@@ -1767,6 +1823,7 @@ export type TransactionUncheckedUpdateManyWithoutTicketTypeInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransactionCreateManyVoucherInput = {
@@ -1784,6 +1841,7 @@ export type TransactionCreateManyVoucherInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
 }
 
 export type TransactionUpdateWithoutVoucherInput = {
@@ -1796,6 +1854,7 @@ export type TransactionUpdateWithoutVoucherInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
@@ -1820,6 +1879,7 @@ export type TransactionUncheckedUpdateWithoutVoucherInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
@@ -1840,6 +1900,7 @@ export type TransactionUncheckedUpdateManyWithoutVoucherInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TransactionCreateManyCouponInput = {
@@ -1857,6 +1918,7 @@ export type TransactionCreateManyCouponInput = {
   expiredAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  rejectionReason?: string | null
 }
 
 export type TransactionUpdateWithoutCouponInput = {
@@ -1869,6 +1931,7 @@ export type TransactionUpdateWithoutCouponInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
@@ -1893,6 +1956,7 @@ export type TransactionUncheckedUpdateWithoutCouponInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
@@ -1913,6 +1977,7 @@ export type TransactionUncheckedUpdateManyWithoutCouponInput = {
   expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1962,6 +2027,7 @@ export type TransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   expiredAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  rejectionReason?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.TicketTypeDefaultArgs<ExtArgs>
@@ -1989,6 +2055,7 @@ export type TransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   expiredAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  rejectionReason?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.TicketTypeDefaultArgs<ExtArgs>
@@ -2012,6 +2079,7 @@ export type TransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   expiredAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  rejectionReason?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.TicketTypeDefaultArgs<ExtArgs>
@@ -2035,9 +2103,10 @@ export type TransactionSelectScalar = {
   expiredAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  rejectionReason?: boolean
 }
 
-export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "eventId" | "ticketTypeId" | "voucherId" | "couponId" | "ticketQty" | "totalPrice" | "pointsUsed" | "finalPrice" | "status" | "paymentProof" | "expiredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "eventId" | "ticketTypeId" | "voucherId" | "couponId" | "ticketQty" | "totalPrice" | "pointsUsed" | "finalPrice" | "status" | "paymentProof" | "expiredAt" | "createdAt" | "updatedAt" | "rejectionReason", ExtArgs["result"]["transaction"]>
 export type TransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
@@ -2092,6 +2161,7 @@ export type $TransactionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     expiredAt: Date
     createdAt: Date
     updatedAt: Date
+    rejectionReason: string | null
   }, ExtArgs["result"]["transaction"]>
   composites: {}
 }
@@ -2538,6 +2608,7 @@ export interface TransactionFieldRefs {
   readonly expiredAt: Prisma.FieldRef<"Transaction", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Transaction", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Transaction", 'DateTime'>
+  readonly rejectionReason: Prisma.FieldRef<"Transaction", 'String'>
 }
     
 

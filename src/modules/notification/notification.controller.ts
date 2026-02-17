@@ -9,11 +9,16 @@ export class NotificationController {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
+      let isRead: boolean | undefined = undefined;
+
+      if (req.query.isRead === "true") isRead = true;
+      if (req.query.isRead === "false") isRead = false;
 
       const result = await this.notificationService.getNotifications(
         req.user!.id,
         page,
         limit,
+        isRead,
       );
       res.status(200).json(result);
     } catch (error: any) {

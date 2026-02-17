@@ -10,17 +10,22 @@ export class NotificationService {
     userId: number,
     page: number = 1,
     limit: number = 20,
+    isRead?: boolean,
   ) => {
     const skip = (page - 1) * limit;
+    const whereClause: any = { userId };
+    if (isRead !== undefined) {
+      whereClause.isRead = isRead;
+    }
 
     const [notifications, total] = await Promise.all([
       this.prisma.notification.findMany({
-        where: { userId },
+        where: whereClause,
         orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
-      this.prisma.notification.count({ where: { userId } }),
+      this.prisma.notification.count({ where: whereClause }),
     ]);
 
     return {
