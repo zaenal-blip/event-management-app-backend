@@ -295,6 +295,7 @@ model Attendee {
   userId        Int
   eventId       Int
   ticketTypeId  Int
+  qrToken       String    @unique
   checkedIn     Boolean   @default(false)
   checkedInAt   DateTime?
   checkedOutAt  DateTime?
@@ -306,7 +307,6 @@ model Attendee {
   event       Event       @relation(fields: [eventId], references: [id])
   ticketType  TicketType  @relation(fields: [ticketTypeId], references: [id])
 
-  @@unique([transactionId, userId])
   @@map("attendees")
 }
 
@@ -362,14 +362,15 @@ model Wishlist {
 }
 
 model Notification {
-  id        Int              @id @default(autoincrement())
-  userId    Int
-  title     String
-  message   String
-  type      NotificationType
-  isRead    Boolean          @default(false)
-  readAt    DateTime?
-  createdAt DateTime         @default(now())
+  id         Int              @id @default(autoincrement())
+  userId     Int
+  title      String
+  message    String
+  type       NotificationType
+  isRead     Boolean          @default(false)
+  readAt     DateTime?
+  relatedUrl String?
+  createdAt  DateTime         @default(now())
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -440,4 +441,10 @@ enum NotificationType {
   PAYMENT_SUCCESS
   EVENT_UPDATE
   PROMOTION
+  TRANSACTION_ACCEPTED
+  TRANSACTION_REJECTED
+  NEW_PURCHASE
+  WAITING_APPROVAL
+  EVENT_SOLD_OUT
+  POINTS_EXPIRING
 }

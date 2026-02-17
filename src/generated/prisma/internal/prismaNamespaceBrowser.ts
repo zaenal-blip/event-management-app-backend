@@ -198,7 +198,8 @@ export const VoucherScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   usageLimit: 'usageLimit',
-  usedCount: 'usedCount'
+  usedCount: 'usedCount',
+  isActive: 'isActive'
 } as const
 
 export type VoucherScalarFieldEnum = (typeof VoucherScalarFieldEnum)[keyof typeof VoucherScalarFieldEnum]
@@ -313,6 +314,7 @@ export const AttendeeScalarFieldEnum = {
   userId: 'userId',
   eventId: 'eventId',
   ticketTypeId: 'ticketTypeId',
+  qrToken: 'qrToken',
   checkedIn: 'checkedIn',
   checkedInAt: 'checkedInAt',
   checkedOutAt: 'checkedOutAt',
@@ -369,6 +371,7 @@ export const NotificationScalarFieldEnum = {
   type: 'type',
   isRead: 'isRead',
   readAt: 'readAt',
+  relatedUrl: 'relatedUrl',
   createdAt: 'createdAt'
 } as const
 

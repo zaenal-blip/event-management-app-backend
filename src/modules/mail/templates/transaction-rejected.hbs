@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Rejected</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 32px 24px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .message {
+            color: #4a4a4a;
+            margin-bottom: 24px;
+        }
+
+        .order-summary {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .order-summary h3 {
+            margin: 0 0 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .reason-box {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .reason-box h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #991b1b;
+        }
+
+        .reason-text {
+            color: #7f1d1d;
+            font-size: 14px;
+            margin: 0;
+            white-space: pre-line;
+        }
+
+        .info-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-box h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .info-list {
+            margin: 0;
+            padding-left: 18px;
+            color: #1e3a5f;
+            font-size: 13px;
+        }
+
+        .info-list li {
+            margin-bottom: 4px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 28px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .footer .brand {
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        .social-links {
+            margin-top: 16px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">❌</div>
+            <h1>Transaction Rejected</h1>
+            <p>Order #{{orderId}}</p>
+        </div>
+
+        <div class="content">
+            <p class="greeting">Hi {{customerName}},</p>
+            <p class="message">
+                We're sorry to inform you that your transaction for
+                <strong>{{eventTitle}}</strong> has been rejected by the organizer.
+            </p>
+
+            <!-- Order Summary using TABLE -->
+            <div class="order-summary">
+                <h3>📋 Order Details</h3>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                    style="border-collapse: collapse; font-size: 14px;">
+                    <tr>
+                        <td style="color: #6b7280; padding: 6px 0;">Order ID</td>
+                        <td align="right" style="font-weight: 600; color: #1a1a1a; padding: 6px 0;">#{{orderId}}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #6b7280; padding: 6px 0;">Event</td>
+                        <td align="right" style="font-weight: 600; color: #1a1a1a; padding: 6px 0;">{{eventTitle}}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #6b7280; padding: 6px 0;">Ticket Type</td>
+                        <td align="right" style="font-weight: 600; color: #1a1a1a; padding: 6px 0;">{{ticketTypeName}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #6b7280; padding: 6px 0;">Quantity</td>
+                        <td align="right" style="font-weight: 600; color: #1a1a1a; padding: 6px 0;">{{ticketQty}}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #6b7280; padding: 6px 0;">Amount</td>
+                        <td align="right" style="font-weight: 600; color: #1a1a1a; padding: 6px 0;">{{totalAmount}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Rejection Reason -->
+            {{#if rejectionReason}}
+            <div class="reason-box">
+                <h4>📝 Reason for Rejection</h4>
+                <p class="reason-text">{{rejectionReason}}</p>
+            </div>
+            {{/if}}
+
+            <!-- What's Next -->
+            <div class="info-box">
+                <h4>ℹ️ What Happens Next?</h4>
+                <ul class="info-list">
+                    <li>Any points used have been restored to your account</li>
+                    <li>Vouchers and coupons applied have been released</li>
+                    <li>You can try purchasing the ticket again with a valid payment proof</li>
+                    <li>If you believe this was an error, please contact the organizer</li>
+                </ul>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="button-container">
+                <a href="{{browseEventsLink}}" class="cta-button">Browse Events</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>If you have questions, please don't hesitate to reach out.</p>
+            <p>With love, <span class="brand">The Eventku Team</span> 💜</p>
+            <div class="social-links">
+                <a href="#">Instagram</a> •
+                <a href="#">Twitter</a> •
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

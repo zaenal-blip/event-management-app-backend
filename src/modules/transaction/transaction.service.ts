@@ -4,11 +4,19 @@ import {
   CreateTransactionBody,
   UploadPaymentProofBody,
 } from "../../types/transaction.js";
+import { MailService } from "../mail/mail.service.js";
+import { NotificationService } from "../notification/notification.service.js";
 import { sendEmail } from "../../lib/mail.js";
 import { calculateUserPointBalance } from "../../utils/point.utils.js";
+import crypto from "crypto";
+import QRCode from "qrcode";
 
 export class TransactionService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(
+    private prisma: PrismaClient,
+    private mailService: MailService,
+    private notificationService: NotificationService,
+  ) {}
 
   createTransaction = async (
     userId: number,
@@ -66,6 +74,20 @@ export class TransactionService {
 
       if (ticketTypeRelation.eventId !== eventId) {
         throw new ApiError("Ticket type does not belong to this event", 400);
+      }
+
+      // Prevent organizer from buying their own event
+      const event = ticketTypeRelation.event;
+      if (event.organizerId) {
+        const organizer = await tx.organizer.findUnique({
+          where: { id: event.organizerId },
+        });
+        if (organizer && organizer.userId === userId) {
+          throw new ApiError(
+            "You cannot purchase tickets for your own event",
+            403,
+          );
+        }
       }
 
       if (ticketType.availableSeat < quantity) {
@@ -323,6 +345,7 @@ export class TransactionService {
                   select: {
                     id: true,
                     name: true,
+                    email: true,
                     avatar: true,
                   },
                 },
@@ -333,8 +356,60 @@ export class TransactionService {
         ticketType: true,
         voucher: true,
         coupon: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
+
+    // Notify organizer about waiting approval
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const organizerUserId = updatedTransaction.event.organizer.user.id;
+    const organizerEmail = updatedTransaction.event.organizer.user.email;
+
+    // In-app notification for organizer
+    await this.notificationService.createNotification(
+      organizerUserId,
+      "WAITING_APPROVAL",
+      "New Payment Awaiting Approval",
+      `${updatedTransaction.user.name} has submitted payment for ${updatedTransaction.event.title} (${updatedTransaction.ticketQty} ticket(s))`,
+      `/dashboard/transactions`,
+    );
+
+    // Format currency for email
+    const formattedAmount = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(updatedTransaction.finalPrice);
+
+    // Send waiting approval email to organizer
+    try {
+      await this.mailService.sendEmail(
+        organizerEmail,
+        `🔔 New Payment Awaiting Approval - ${updatedTransaction.event.title}`,
+        "transaction-waiting-approval",
+        {
+          organizerName:
+            updatedTransaction.event.organizer.user.name ||
+            updatedTransaction.event.organizer.name ||
+            "Organizer",
+          customerName: updatedTransaction.user.name,
+          eventTitle: updatedTransaction.event.title,
+          ticketTypeName: updatedTransaction.ticketType.name,
+          ticketQty: updatedTransaction.ticketQty,
+          totalAmount: formattedAmount,
+          orderId: updatedTransaction.id,
+          dashboardLink: `${frontendUrl}/dashboard/transactions`,
+        },
+      );
+    } catch (err) {
+      console.error("Failed to send waiting-approval email to organizer:", err);
+    }
 
     return updatedTransaction;
   };
@@ -408,24 +483,92 @@ export class TransactionService {
       },
     });
 
-    // Send email notification to customer
-    await sendEmail({
-      to: updatedTransaction.user.email,
-      subject: "Transaction Confirmed - Event Ticket",
-      html: `
-        <h1>Transaction Confirmed</h1>
-        <p>Dear ${updatedTransaction.user.name},</p>
-        <p>Your transaction for event <strong>${updatedTransaction.event.title}</strong> has been confirmed.</p>
-        <p>Ticket Type: ${updatedTransaction.ticketType.name}</p>
-        <p>Quantity: ${updatedTransaction.ticketQty}</p>
-        <p>Have a great time!</p>
-      `,
+    // Create Attendee records — 1 per seat (ticketQty)
+    const attendees = [];
+    for (let i = 0; i < updatedTransaction.ticketQty; i++) {
+      const qrToken = crypto.randomBytes(32).toString("hex");
+      const attendee = await this.prisma.attendee.create({
+        data: {
+          transactionId: updatedTransaction.id,
+          userId: updatedTransaction.userId,
+          eventId: updatedTransaction.eventId,
+          ticketTypeId: updatedTransaction.ticketTypeId,
+          qrToken,
+        },
+      });
+      attendees.push(attendee);
+    }
+
+    // Generate QR code buffers as CID attachments (Gmail blocks data URLs)
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const ticketsForTemplate = [];
+    const qrAttachments = [];
+    for (let i = 0; i < attendees.length; i++) {
+      const checkInUrl = `${frontendUrl}/check-in/${attendees[i].qrToken}`;
+      const qrBuffer = await QRCode.toBuffer(checkInUrl, {
+        width: 200,
+        margin: 1,
+        type: "png",
+      });
+      const cid = `qr-ticket-${i}@eventku`;
+      ticketsForTemplate.push({
+        ticketNumber: i + 1,
+        qrCid: cid,
+      });
+      qrAttachments.push({
+        filename: `qr-ticket-${i + 1}.png`,
+        content: qrBuffer,
+        cid,
+        contentType: "image/png",
+      });
+    }
+
+    // Format event date
+    const eventDate = new Date(
+      updatedTransaction.event.startDate,
+    ).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
+
+    // Send email using Handlebars template with CID attachments
+    await this.mailService.sendEmail(
+      updatedTransaction.user.email,
+      `🎟 Your Ticket for ${updatedTransaction.event.title}`,
+      "ticket-confirmation",
+      {
+        customerName: updatedTransaction.user.name,
+        eventTitle: updatedTransaction.event.title,
+        eventDate,
+        eventVenue: updatedTransaction.event.venue || "",
+        ticketTypeName: updatedTransaction.ticketType.name,
+        ticketQty: updatedTransaction.ticketQty,
+        orderId: updatedTransaction.id,
+        tickets: ticketsForTemplate,
+        viewTicketsLink: `${frontendUrl}/payment/${updatedTransaction.id}`,
+      },
+      qrAttachments,
+    );
+
+    // In-app notification for customer
+    await this.notificationService.createNotification(
+      updatedTransaction.user.id,
+      "TRANSACTION_ACCEPTED",
+      "Transaction Approved! 🎉",
+      `Your transaction for ${updatedTransaction.event.title} has been approved. Your tickets are ready!`,
+      `/payment/${updatedTransaction.id}`,
+    );
 
     return updatedTransaction;
   };
 
-  rejectTransaction = async (transactionId: number, organizerId: number) => {
+  rejectTransaction = async (
+    transactionId: number,
+    organizerId: number,
+    reason?: string,
+  ) => {
     const organizer = await this.prisma.organizer.findUnique({
       where: { userId: organizerId },
     });
@@ -497,17 +640,40 @@ export class TransactionService {
       },
     });
 
-    // Send email notification to customer
-    await sendEmail({
-      to: updatedTransaction.user.email,
-      subject: "Transaction Rejected - Event Ticket",
-      html: `
-        <h1>Transaction Rejected</h1>
-        <p>Dear ${updatedTransaction.user.name},</p>
-        <p>Your transaction for event <strong>${updatedTransaction.event.title}</strong> has been rejected by the organizer.</p>
-        <p>If you have used any points or vouchers, they have been restored to your account.</p>
-      `,
-    });
+    // Format currency for email
+    const formattedAmount = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(transaction.finalPrice);
+
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
+    // Send rejection email using template
+    await this.mailService.sendEmail(
+      updatedTransaction.user.email,
+      `❌ Transaction Rejected - ${updatedTransaction.event.title}`,
+      "transaction-rejected",
+      {
+        customerName: updatedTransaction.user.name,
+        eventTitle: updatedTransaction.event.title,
+        ticketTypeName: updatedTransaction.ticketType.name,
+        ticketQty: transaction.ticketQty,
+        totalAmount: formattedAmount,
+        orderId: updatedTransaction.id,
+        rejectionReason: reason || "",
+        browseEventsLink: `${frontendUrl}/events`,
+      },
+    );
+
+    // In-app notification for customer
+    await this.notificationService.createNotification(
+      updatedTransaction.user.id,
+      "TRANSACTION_REJECTED",
+      "Transaction Rejected",
+      `Your transaction for ${updatedTransaction.event.title} has been rejected.${reason ? ` Reason: ${reason}` : ""}`,
+      `/transactions`,
+    );
 
     return updatedTransaction;
   };
@@ -773,6 +939,7 @@ export class TransactionService {
           select: {
             id: true,
             userId: true,
+            qrToken: true,
             checkedIn: true,
             checkedInAt: true,
             user: {
@@ -937,5 +1104,138 @@ export class TransactionService {
     }
 
     return cancelledTransactions.length;
+  };
+
+  // ─── TICKET & CHECK-IN ────────────────────────────────────────────
+
+  /**
+   * Get tickets (attendees) for a transaction — customer only
+   */
+  getTicketsByTransaction = async (transactionId: number, userId: number) => {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: { id: transactionId },
+      select: {
+        id: true,
+        status: true,
+        userId: true,
+        ticketQty: true,
+        event: {
+          select: {
+            title: true,
+            startDate: true,
+            endDate: true,
+            location: true,
+            venue: true,
+            image: true,
+          },
+        },
+        ticketType: {
+          select: { name: true, price: true },
+        },
+        attendees: {
+          select: {
+            id: true,
+            qrToken: true,
+            checkedIn: true,
+            checkedInAt: true,
+            user: {
+              select: { name: true, email: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!transaction) {
+      throw new ApiError("Transaction not found", 404);
+    }
+
+    if (transaction.userId !== userId) {
+      throw new ApiError(
+        "You don't have permission to view these tickets",
+        403,
+      );
+    }
+
+    if (transaction.status !== "DONE") {
+      throw new ApiError(
+        "Tickets are only available for confirmed transactions",
+        400,
+      );
+    }
+
+    return {
+      transactionId: transaction.id,
+      event: transaction.event,
+      ticketType: transaction.ticketType,
+      ticketQty: transaction.ticketQty,
+      tickets: transaction.attendees.map((att) => ({
+        id: att.id,
+        qrToken: att.qrToken,
+        attendeeName: att.user.name,
+        attendeeEmail: att.user.email,
+        checkedIn: att.checkedIn,
+        checkedInAt: att.checkedInAt,
+      })),
+    };
+  };
+
+  /**
+   * Check-in an attendee via QR token (public endpoint, token is auth)
+   */
+  checkIn = async (qrToken: string) => {
+    const attendee = await this.prisma.attendee.findUnique({
+      where: { qrToken },
+      include: {
+        transaction: { select: { status: true } },
+        event: { select: { title: true, endDate: true } },
+        ticketType: { select: { name: true } },
+        user: { select: { name: true, email: true } },
+      },
+    });
+
+    if (!attendee) {
+      throw new ApiError("Invalid ticket — QR code not found", 404);
+    }
+
+    if (attendee.transaction.status !== "DONE") {
+      throw new ApiError("Transaction is not confirmed", 400);
+    }
+
+    if (attendee.event.endDate && attendee.event.endDate < new Date()) {
+      throw new ApiError("This event has already ended", 400);
+    }
+
+    if (attendee.checkedIn) {
+      return {
+        success: false,
+        message: "Already checked in",
+        attendee: {
+          name: attendee.user.name,
+          event: attendee.event.title,
+          ticketType: attendee.ticketType.name,
+          checkedInAt: attendee.checkedInAt,
+        },
+      };
+    }
+
+    await this.prisma.attendee.update({
+      where: { qrToken },
+      data: {
+        checkedIn: true,
+        checkedInAt: new Date(),
+      },
+    });
+
+    return {
+      success: true,
+      message: "Check-in successful!",
+      attendee: {
+        name: attendee.user.name,
+        event: attendee.event.title,
+        ticketType: attendee.ticketType.name,
+        checkedInAt: new Date(),
+      },
+    };
   };
 }

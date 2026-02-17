@@ -4,6 +4,13 @@ import fs from "fs/promises";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
+interface Attachment {
+  filename: string;
+  content: Buffer | string;
+  cid: string;
+  contentType?: string;
+}
+
 export class MailService {
   private transporter: ReturnType<typeof createTransport>;
 
@@ -37,6 +44,7 @@ export class MailService {
     subject: string,
     templateName: string,
     context: object,
+    attachments?: Attachment[],
   ) => {
     try {
       const html = await this.renderTemplates(templateName, context);
@@ -46,6 +54,7 @@ export class MailService {
         to,
         subject,
         html,
+        attachments,
       });
 
       return result;

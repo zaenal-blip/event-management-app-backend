@@ -48,6 +48,7 @@ export type AttendeeMinAggregateOutputType = {
   userId: number | null
   eventId: number | null
   ticketTypeId: number | null
+  qrToken: string | null
   checkedIn: boolean | null
   checkedInAt: Date | null
   checkedOutAt: Date | null
@@ -60,6 +61,7 @@ export type AttendeeMaxAggregateOutputType = {
   userId: number | null
   eventId: number | null
   ticketTypeId: number | null
+  qrToken: string | null
   checkedIn: boolean | null
   checkedInAt: Date | null
   checkedOutAt: Date | null
@@ -72,6 +74,7 @@ export type AttendeeCountAggregateOutputType = {
   userId: number
   eventId: number
   ticketTypeId: number
+  qrToken: number
   checkedIn: number
   checkedInAt: number
   checkedOutAt: number
@@ -102,6 +105,7 @@ export type AttendeeMinAggregateInputType = {
   userId?: true
   eventId?: true
   ticketTypeId?: true
+  qrToken?: true
   checkedIn?: true
   checkedInAt?: true
   checkedOutAt?: true
@@ -114,6 +118,7 @@ export type AttendeeMaxAggregateInputType = {
   userId?: true
   eventId?: true
   ticketTypeId?: true
+  qrToken?: true
   checkedIn?: true
   checkedInAt?: true
   checkedOutAt?: true
@@ -126,6 +131,7 @@ export type AttendeeCountAggregateInputType = {
   userId?: true
   eventId?: true
   ticketTypeId?: true
+  qrToken?: true
   checkedIn?: true
   checkedInAt?: true
   checkedOutAt?: true
@@ -225,6 +231,7 @@ export type AttendeeGroupByOutputType = {
   userId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn: boolean
   checkedInAt: Date | null
   checkedOutAt: Date | null
@@ -260,6 +267,7 @@ export type AttendeeWhereInput = {
   userId?: Prisma.IntFilter<"Attendee"> | number
   eventId?: Prisma.IntFilter<"Attendee"> | number
   ticketTypeId?: Prisma.IntFilter<"Attendee"> | number
+  qrToken?: Prisma.StringFilter<"Attendee"> | string
   checkedIn?: Prisma.BoolFilter<"Attendee"> | boolean
   checkedInAt?: Prisma.DateTimeNullableFilter<"Attendee"> | Date | string | null
   checkedOutAt?: Prisma.DateTimeNullableFilter<"Attendee"> | Date | string | null
@@ -276,6 +284,7 @@ export type AttendeeOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  qrToken?: Prisma.SortOrder
   checkedIn?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkedOutAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -288,7 +297,7 @@ export type AttendeeOrderByWithRelationInput = {
 
 export type AttendeeWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  transactionId_userId?: Prisma.AttendeeTransactionIdUserIdCompoundUniqueInput
+  qrToken?: string
   AND?: Prisma.AttendeeWhereInput | Prisma.AttendeeWhereInput[]
   OR?: Prisma.AttendeeWhereInput[]
   NOT?: Prisma.AttendeeWhereInput | Prisma.AttendeeWhereInput[]
@@ -304,7 +313,7 @@ export type AttendeeWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   ticketType?: Prisma.XOR<Prisma.TicketTypeScalarRelationFilter, Prisma.TicketTypeWhereInput>
-}, "id" | "transactionId_userId">
+}, "id" | "qrToken">
 
 export type AttendeeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -312,6 +321,7 @@ export type AttendeeOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  qrToken?: Prisma.SortOrder
   checkedIn?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkedOutAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -332,6 +342,7 @@ export type AttendeeScalarWhereWithAggregatesInput = {
   userId?: Prisma.IntWithAggregatesFilter<"Attendee"> | number
   eventId?: Prisma.IntWithAggregatesFilter<"Attendee"> | number
   ticketTypeId?: Prisma.IntWithAggregatesFilter<"Attendee"> | number
+  qrToken?: Prisma.StringWithAggregatesFilter<"Attendee"> | string
   checkedIn?: Prisma.BoolWithAggregatesFilter<"Attendee"> | boolean
   checkedInAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Attendee"> | Date | string | null
   checkedOutAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Attendee"> | Date | string | null
@@ -339,6 +350,7 @@ export type AttendeeScalarWhereWithAggregatesInput = {
 }
 
 export type AttendeeCreateInput = {
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -355,6 +367,7 @@ export type AttendeeUncheckedCreateInput = {
   userId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -362,6 +375,7 @@ export type AttendeeUncheckedCreateInput = {
 }
 
 export type AttendeeUpdateInput = {
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -378,6 +392,7 @@ export type AttendeeUncheckedUpdateInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -390,6 +405,7 @@ export type AttendeeCreateManyInput = {
   userId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -397,6 +413,7 @@ export type AttendeeCreateManyInput = {
 }
 
 export type AttendeeUpdateManyMutationInput = {
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -409,6 +426,7 @@ export type AttendeeUncheckedUpdateManyInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -425,17 +443,13 @@ export type AttendeeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type AttendeeTransactionIdUserIdCompoundUniqueInput = {
-  transactionId: number
-  userId: number
-}
-
 export type AttendeeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  qrToken?: Prisma.SortOrder
   checkedIn?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrder
   checkedOutAt?: Prisma.SortOrder
@@ -456,6 +470,7 @@ export type AttendeeMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  qrToken?: Prisma.SortOrder
   checkedIn?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrder
   checkedOutAt?: Prisma.SortOrder
@@ -468,6 +483,7 @@ export type AttendeeMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  qrToken?: Prisma.SortOrder
   checkedIn?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrder
   checkedOutAt?: Prisma.SortOrder
@@ -651,6 +667,7 @@ export type AttendeeUncheckedUpdateManyWithoutTransactionNestedInput = {
 }
 
 export type AttendeeCreateWithoutUserInput = {
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -665,6 +682,7 @@ export type AttendeeUncheckedCreateWithoutUserInput = {
   transactionId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -706,6 +724,7 @@ export type AttendeeScalarWhereInput = {
   userId?: Prisma.IntFilter<"Attendee"> | number
   eventId?: Prisma.IntFilter<"Attendee"> | number
   ticketTypeId?: Prisma.IntFilter<"Attendee"> | number
+  qrToken?: Prisma.StringFilter<"Attendee"> | string
   checkedIn?: Prisma.BoolFilter<"Attendee"> | boolean
   checkedInAt?: Prisma.DateTimeNullableFilter<"Attendee"> | Date | string | null
   checkedOutAt?: Prisma.DateTimeNullableFilter<"Attendee"> | Date | string | null
@@ -713,6 +732,7 @@ export type AttendeeScalarWhereInput = {
 }
 
 export type AttendeeCreateWithoutEventInput = {
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -727,6 +747,7 @@ export type AttendeeUncheckedCreateWithoutEventInput = {
   transactionId: number
   userId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -760,6 +781,7 @@ export type AttendeeUpdateManyWithWhereWithoutEventInput = {
 }
 
 export type AttendeeCreateWithoutTicketTypeInput = {
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -774,6 +796,7 @@ export type AttendeeUncheckedCreateWithoutTicketTypeInput = {
   transactionId: number
   userId: number
   eventId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -807,6 +830,7 @@ export type AttendeeUpdateManyWithWhereWithoutTicketTypeInput = {
 }
 
 export type AttendeeCreateWithoutTransactionInput = {
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -821,6 +845,7 @@ export type AttendeeUncheckedCreateWithoutTransactionInput = {
   userId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -858,6 +883,7 @@ export type AttendeeCreateManyUserInput = {
   transactionId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -865,6 +891,7 @@ export type AttendeeCreateManyUserInput = {
 }
 
 export type AttendeeUpdateWithoutUserInput = {
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -879,6 +906,7 @@ export type AttendeeUncheckedUpdateWithoutUserInput = {
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -890,6 +918,7 @@ export type AttendeeUncheckedUpdateManyWithoutUserInput = {
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -901,6 +930,7 @@ export type AttendeeCreateManyEventInput = {
   transactionId: number
   userId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -908,6 +938,7 @@ export type AttendeeCreateManyEventInput = {
 }
 
 export type AttendeeUpdateWithoutEventInput = {
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -922,6 +953,7 @@ export type AttendeeUncheckedUpdateWithoutEventInput = {
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -933,6 +965,7 @@ export type AttendeeUncheckedUpdateManyWithoutEventInput = {
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -944,6 +977,7 @@ export type AttendeeCreateManyTicketTypeInput = {
   transactionId: number
   userId: number
   eventId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -951,6 +985,7 @@ export type AttendeeCreateManyTicketTypeInput = {
 }
 
 export type AttendeeUpdateWithoutTicketTypeInput = {
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -965,6 +1000,7 @@ export type AttendeeUncheckedUpdateWithoutTicketTypeInput = {
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -976,6 +1012,7 @@ export type AttendeeUncheckedUpdateManyWithoutTicketTypeInput = {
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -987,6 +1024,7 @@ export type AttendeeCreateManyTransactionInput = {
   userId: number
   eventId: number
   ticketTypeId: number
+  qrToken: string
   checkedIn?: boolean
   checkedInAt?: Date | string | null
   checkedOutAt?: Date | string | null
@@ -994,6 +1032,7 @@ export type AttendeeCreateManyTransactionInput = {
 }
 
 export type AttendeeUpdateWithoutTransactionInput = {
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1008,6 +1047,7 @@ export type AttendeeUncheckedUpdateWithoutTransactionInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1019,6 +1059,7 @@ export type AttendeeUncheckedUpdateManyWithoutTransactionInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   eventId?: Prisma.IntFieldUpdateOperationsInput | number
   ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  qrToken?: Prisma.StringFieldUpdateOperationsInput | string
   checkedIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1033,6 +1074,7 @@ export type AttendeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   userId?: boolean
   eventId?: boolean
   ticketTypeId?: boolean
+  qrToken?: boolean
   checkedIn?: boolean
   checkedInAt?: boolean
   checkedOutAt?: boolean
@@ -1049,6 +1091,7 @@ export type AttendeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   userId?: boolean
   eventId?: boolean
   ticketTypeId?: boolean
+  qrToken?: boolean
   checkedIn?: boolean
   checkedInAt?: boolean
   checkedOutAt?: boolean
@@ -1065,6 +1108,7 @@ export type AttendeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   userId?: boolean
   eventId?: boolean
   ticketTypeId?: boolean
+  qrToken?: boolean
   checkedIn?: boolean
   checkedInAt?: boolean
   checkedOutAt?: boolean
@@ -1081,13 +1125,14 @@ export type AttendeeSelectScalar = {
   userId?: boolean
   eventId?: boolean
   ticketTypeId?: boolean
+  qrToken?: boolean
   checkedIn?: boolean
   checkedInAt?: boolean
   checkedOutAt?: boolean
   createdAt?: boolean
 }
 
-export type AttendeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "transactionId" | "userId" | "eventId" | "ticketTypeId" | "checkedIn" | "checkedInAt" | "checkedOutAt" | "createdAt", ExtArgs["result"]["attendee"]>
+export type AttendeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "transactionId" | "userId" | "eventId" | "ticketTypeId" | "qrToken" | "checkedIn" | "checkedInAt" | "checkedOutAt" | "createdAt", ExtArgs["result"]["attendee"]>
 export type AttendeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transaction?: boolean | Prisma.TransactionDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1121,6 +1166,7 @@ export type $AttendeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     userId: number
     eventId: number
     ticketTypeId: number
+    qrToken: string
     checkedIn: boolean
     checkedInAt: Date | null
     checkedOutAt: Date | null
@@ -1557,6 +1603,7 @@ export interface AttendeeFieldRefs {
   readonly userId: Prisma.FieldRef<"Attendee", 'Int'>
   readonly eventId: Prisma.FieldRef<"Attendee", 'Int'>
   readonly ticketTypeId: Prisma.FieldRef<"Attendee", 'Int'>
+  readonly qrToken: Prisma.FieldRef<"Attendee", 'String'>
   readonly checkedIn: Prisma.FieldRef<"Attendee", 'Boolean'>
   readonly checkedInAt: Prisma.FieldRef<"Attendee", 'DateTime'>
   readonly checkedOutAt: Prisma.FieldRef<"Attendee", 'DateTime'>
