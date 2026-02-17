@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt #{{receiptNumber}}</title>
+</head>
+
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1a1a2e; background-color: #f0f2f5; margin: 0; padding: 20px;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 480px; margin: 0 auto;">
+        <tr>
+            <td>
+                <!-- Main Card -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+
+                    <!-- Top Bar -->
+                    <tr>
+                        <td style="padding: 16px 24px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="font-size: 20px;">🎫</td>
+                                    <td align="right" style="font-size: 20px; color: #22c55e;">✅</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Success Icon + Title -->
+                    <tr>
+                        <td align="center" style="padding: 16px 24px 8px;">
+                            <div style="width: 64px; height: 64px; border-radius: 50%; background-color: #f0fdf4; border: 3px solid #bbf7d0; display: inline-block; text-align: center; line-height: 64px; font-size: 32px;">
+                                ✅
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 8px 24px 4px;">
+                            <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #1a1a2e;">Struk Pembayaran</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 0 24px 4px;">
+                            <p style="margin: 0; font-size: 14px; color: #6b7280;">Receipt #{{receiptNumber}}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 8px 24px 24px;">
+                            <p style="margin: 0; font-size: 28px; font-weight: 800; color: #1a1a2e;">{{finalPrice}}</p>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 24px;">
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0;" />
+                        </td>
+                    </tr>
+
+                    <!-- Receipt Details -->
+                    <tr>
+                        <td style="padding: 24px;">
+                            <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 700; color: #1a1a2e;">Detail Transaksi</h3>
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 14px;">
+                                <tr>
+                                    <td style="color: #6b7280; padding: 8px 0;">Tanggal</td>
+                                    <td align="right" style="font-weight: 600; color: #1a1a2e; padding: 8px 0;">{{receiptDate}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #6b7280; padding: 8px 0;">ID Transaksi</td>
+                                    <td align="right" style="font-weight: 600; color: #1a1a2e; padding: 8px 0;">TXN-{{transactionId}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #6b7280; padding: 8px 0;">Metode Pembayaran</td>
+                                    <td align="right" style="font-weight: 600; color: #1a1a2e; padding: 8px 0;">Transfer Manual</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #6b7280; padding: 8px 0;">Penyelenggara</td>
+                                    <td align="right" style="font-weight: 600; color: #1a1a2e; padding: 8px 0;">{{organizerName}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 24px;">
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0;" />
+                        </td>
+                    </tr>
+
+                    <!-- Product Items -->
+                    <tr>
+                        <td style="padding: 24px;">
+                            <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 700; color: #1a1a2e;">Item Pembelian</h3>
+
+                            <!-- Event item card -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                                <tr>
+                                    <td style="padding: 16px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td style="font-size: 14px; font-weight: 600; color: #1a1a2e; padding-bottom: 4px;" colspan="2">
+                                                    {{eventTitle}}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size: 13px; color: #6b7280; padding-top: 4px;">
+                                                    {{ticketTypeName}} × {{ticketQty}}
+                                                </td>
+                                                <td align="right" style="font-size: 14px; font-weight: 600; color: #1a1a2e;">
+                                                    {{subtotal}}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="font-size: 12px; color: #9ca3af; padding-top: 4px;">
+                                                    📅 {{eventDate}} &nbsp;·&nbsp; 📍 {{eventVenue}}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 24px;">
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0;" />
+                        </td>
+                    </tr>
+
+                    <!-- Price Breakdown -->
+                    <tr>
+                        <td style="padding: 24px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 14px;">
+                                <tr>
+                                    <td style="color: #6b7280; padding: 6px 0;">Subtotal</td>
+                                    <td align="right" style="color: #1a1a2e; padding: 6px 0;">{{subtotal}}</td>
+                                </tr>
+                                {{#if voucherDiscount}}
+                                <tr>
+                                    <td style="color: #22c55e; padding: 6px 0;">Diskon Voucher ({{voucherCode}})</td>
+                                    <td align="right" style="color: #22c55e; padding: 6px 0;">-{{voucherDiscount}}</td>
+                                </tr>
+                                {{/if}}
+                                {{#if couponDiscount}}
+                                <tr>
+                                    <td style="color: #22c55e; padding: 6px 0;">Diskon Kupon ({{couponCode}})</td>
+                                    <td align="right" style="color: #22c55e; padding: 6px 0;">-{{couponDiscount}}</td>
+                                </tr>
+                                {{/if}}
+                                {{#if pointsUsedAmount}}
+                                <tr>
+                                    <td style="color: #22c55e; padding: 6px 0;">Poin Digunakan ({{pointsUsed}} poin)</td>
+                                    <td align="right" style="color: #22c55e; padding: 6px 0;">-{{pointsUsedAmount}}</td>
+                                </tr>
+                                {{/if}}
+                                <tr>
+                                    <td colspan="2" style="padding: 8px 0;">
+                                        <hr style="border: none; border-top: 2px solid #1a1a2e; margin: 0;" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 16px; font-weight: 700; color: #1a1a2e; padding: 8px 0;">Total</td>
+                                    <td align="right" style="font-size: 16px; font-weight: 700; color: #1a1a2e; padding: 8px 0;">{{finalPrice}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 24px;">
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0;" />
+                        </td>
+                    </tr>
+
+                    <!-- Payer Information -->
+                    <tr>
+                        <td style="padding: 24px;">
+                            <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 700; color: #1a1a2e;">Informasi Pembeli</h3>
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 14px;">
+                                <tr>
+                                    <td style="color: #6b7280; padding: 6px 0;">Nama</td>
+                                    <td align="right" style="font-weight: 600; color: #1a1a2e; padding: 6px 0;">{{customerName}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #6b7280; padding: 6px 0;">Email</td>
+                                    <td align="right" style="font-weight: 600; color: #1a1a2e; padding: 6px 0;">{{customerEmail}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 16px 24px; background-color: #f8fafc; border-top: 1px solid #e5e7eb;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="font-size: 12px; color: #9ca3af;">
+                                        Powered by <span style="font-weight: 600; color: #4f46e5;">Eventku</span>
+                                    </td>
+                                    <td align="right" style="font-size: 12px; color: #9ca3af;">
+                                        🎫
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!-- Disclaimer -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 16px;">
+                    <tr>
+                        <td align="center" style="font-size: 11px; color: #9ca3af; padding: 8px 0;">
+                            Struk ini dibuat otomatis oleh sistem Eventku. Simpan email ini sebagai bukti pembayaran Anda.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

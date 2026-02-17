@@ -534,23 +534,108 @@ export class TransactionService {
     });
 
     // Send email using Handlebars template with CID attachments
-    await this.mailService.sendEmail(
-      updatedTransaction.user.email,
-      `🎟 Your Ticket for ${updatedTransaction.event.title}`,
-      "ticket-confirmation",
-      {
-        customerName: updatedTransaction.user.name,
-        eventTitle: updatedTransaction.event.title,
-        eventDate,
-        eventVenue: updatedTransaction.event.venue || "",
-        ticketTypeName: updatedTransaction.ticketType.name,
-        ticketQty: updatedTransaction.ticketQty,
-        orderId: updatedTransaction.id,
-        tickets: ticketsForTemplate,
-        viewTicketsLink: `${frontendUrl}/payment/${updatedTransaction.id}`,
-      },
-      qrAttachments,
-    );
+    try {
+      await this.mailService.sendEmail(
+        updatedTransaction.user.email,
+        `🎟 Your Ticket for ${updatedTransaction.event.title}`,
+        "ticket-confirmation",
+        {
+          customerName: updatedTransaction.user.name,
+          eventTitle: updatedTransaction.event.title,
+          eventDate,
+          eventVenue: updatedTransaction.event.venue || "",
+          ticketTypeName: updatedTransaction.ticketType.name,
+          ticketQty: updatedTransaction.ticketQty,
+          orderId: updatedTransaction.id,
+          tickets: ticketsForTemplate,
+          viewTicketsLink: `${frontendUrl}/payment/${updatedTransaction.id}`,
+        },
+        qrAttachments,
+      );
+      console.log("✅ Ticket confirmation email sent successfully");
+    } catch (err) {
+      console.error("❌ Failed to send ticket confirmation email:", err);
+    }
+
+    // Small delay to avoid Gmail rate limiting
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Send payment receipt email
+    try {
+      const formatRupiah = (amount: number) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(amount);
+
+      const receiptDate = new Date().toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      const receiptNumber = `RCP${Date.now().toString().slice(-10)}`;
+
+      // Compute discount amounts
+      const subtotal = updatedTransaction.totalPrice;
+      const voucherDiscount = updatedTransaction.voucher
+        ? updatedTransaction.voucher.discountType === "PERCENTAGE"
+          ? Math.floor(
+              subtotal * (updatedTransaction.voucher.discountAmount / 100),
+            )
+          : Math.min(updatedTransaction.voucher.discountAmount, subtotal)
+        : 0;
+      const couponDiscount = updatedTransaction.coupon
+        ? Math.min(
+            updatedTransaction.coupon.discountAmount,
+            subtotal - voucherDiscount,
+          )
+        : 0;
+      const pointsUsedAmount = updatedTransaction.pointsUsed;
+
+      const organizerName =
+        updatedTransaction.event.organizer.name ||
+        updatedTransaction.event.organizer.user.name ||
+        "Eventku Organizer";
+
+      await this.mailService.sendEmail(
+        updatedTransaction.user.email,
+        `🧾 Struk Pembayaran - ${updatedTransaction.event.title}`,
+        "payment-receipt",
+        {
+          receiptNumber,
+          receiptDate,
+          transactionId: updatedTransaction.id,
+          organizerName,
+          eventTitle: updatedTransaction.event.title,
+          eventDate,
+          eventVenue: updatedTransaction.event.venue || "",
+          ticketTypeName: updatedTransaction.ticketType.name,
+          ticketQty: updatedTransaction.ticketQty,
+          subtotal: formatRupiah(subtotal),
+          voucherDiscount:
+            voucherDiscount > 0 ? formatRupiah(voucherDiscount) : null,
+          voucherCode: updatedTransaction.voucher?.code || null,
+          couponDiscount:
+            couponDiscount > 0 ? formatRupiah(couponDiscount) : null,
+          couponCode: updatedTransaction.coupon?.code || null,
+          pointsUsed:
+            updatedTransaction.pointsUsed > 0
+              ? updatedTransaction.pointsUsed
+              : null,
+          pointsUsedAmount:
+            pointsUsedAmount > 0 ? formatRupiah(pointsUsedAmount) : null,
+          finalPrice: formatRupiah(updatedTransaction.finalPrice),
+          customerName: updatedTransaction.user.name,
+          customerEmail: updatedTransaction.user.email,
+        },
+      );
+    } catch (err) {
+      console.error("Failed to send payment receipt email:", err);
+    }
 
     // In-app notification for customer
     await this.notificationService.createNotification(
