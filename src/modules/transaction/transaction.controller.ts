@@ -52,9 +52,11 @@ export class TransactionController {
     }
 
     const transactionId = Number(req.params.id);
+    const reason = req.body?.reason as string | undefined;
     const result = await this.transactionService.rejectTransaction(
       transactionId,
       req.user.id,
+      reason,
     );
     res.status(200).send(result);
   };
@@ -109,6 +111,29 @@ export class TransactionController {
       transactionId,
       req.user.id,
     );
+    res.status(200).send(result);
+  };
+
+  getTickets = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const transactionId = Number(req.params.id);
+    const result = await this.transactionService.getTicketsByTransaction(
+      transactionId,
+      req.user.id,
+    );
+    res.status(200).send(result);
+  };
+
+  checkIn = async (req: Request, res: Response) => {
+    const token = req.params.token as string;
+    if (!token) {
+      return res.status(400).send({ message: "Token is required" });
+    }
+
+    const result = await this.transactionService.checkIn(token);
     res.status(200).send(result);
   };
 }

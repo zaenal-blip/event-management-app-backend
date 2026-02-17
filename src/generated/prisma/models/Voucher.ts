@@ -52,6 +52,7 @@ export type VoucherMinAggregateOutputType = {
   endDate: Date | null
   usageLimit: number | null
   usedCount: number | null
+  isActive: boolean | null
 }
 
 export type VoucherMaxAggregateOutputType = {
@@ -64,6 +65,7 @@ export type VoucherMaxAggregateOutputType = {
   endDate: Date | null
   usageLimit: number | null
   usedCount: number | null
+  isActive: boolean | null
 }
 
 export type VoucherCountAggregateOutputType = {
@@ -76,6 +78,7 @@ export type VoucherCountAggregateOutputType = {
   endDate: number
   usageLimit: number
   usedCount: number
+  isActive: number
   _all: number
 }
 
@@ -106,6 +109,7 @@ export type VoucherMinAggregateInputType = {
   endDate?: true
   usageLimit?: true
   usedCount?: true
+  isActive?: true
 }
 
 export type VoucherMaxAggregateInputType = {
@@ -118,6 +122,7 @@ export type VoucherMaxAggregateInputType = {
   endDate?: true
   usageLimit?: true
   usedCount?: true
+  isActive?: true
 }
 
 export type VoucherCountAggregateInputType = {
@@ -130,6 +135,7 @@ export type VoucherCountAggregateInputType = {
   endDate?: true
   usageLimit?: true
   usedCount?: true
+  isActive?: true
   _all?: true
 }
 
@@ -229,6 +235,7 @@ export type VoucherGroupByOutputType = {
   endDate: Date
   usageLimit: number
   usedCount: number
+  isActive: boolean
   _count: VoucherCountAggregateOutputType | null
   _avg: VoucherAvgAggregateOutputType | null
   _sum: VoucherSumAggregateOutputType | null
@@ -264,6 +271,7 @@ export type VoucherWhereInput = {
   endDate?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   usageLimit?: Prisma.IntFilter<"Voucher"> | number
   usedCount?: Prisma.IntFilter<"Voucher"> | number
+  isActive?: Prisma.BoolFilter<"Voucher"> | boolean
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   transactions?: Prisma.TransactionListRelationFilter
 }
@@ -278,6 +286,7 @@ export type VoucherOrderByWithRelationInput = {
   endDate?: Prisma.SortOrder
   usageLimit?: Prisma.SortOrder
   usedCount?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   event?: Prisma.EventOrderByWithRelationInput
   transactions?: Prisma.TransactionOrderByRelationAggregateInput
 }
@@ -296,6 +305,7 @@ export type VoucherWhereUniqueInput = Prisma.AtLeast<{
   endDate?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   usageLimit?: Prisma.IntFilter<"Voucher"> | number
   usedCount?: Prisma.IntFilter<"Voucher"> | number
+  isActive?: Prisma.BoolFilter<"Voucher"> | boolean
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   transactions?: Prisma.TransactionListRelationFilter
 }, "id" | "eventId_code">
@@ -310,6 +320,7 @@ export type VoucherOrderByWithAggregationInput = {
   endDate?: Prisma.SortOrder
   usageLimit?: Prisma.SortOrder
   usedCount?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   _count?: Prisma.VoucherCountOrderByAggregateInput
   _avg?: Prisma.VoucherAvgOrderByAggregateInput
   _max?: Prisma.VoucherMaxOrderByAggregateInput
@@ -330,6 +341,7 @@ export type VoucherScalarWhereWithAggregatesInput = {
   endDate?: Prisma.DateTimeWithAggregatesFilter<"Voucher"> | Date | string
   usageLimit?: Prisma.IntWithAggregatesFilter<"Voucher"> | number
   usedCount?: Prisma.IntWithAggregatesFilter<"Voucher"> | number
+  isActive?: Prisma.BoolWithAggregatesFilter<"Voucher"> | boolean
 }
 
 export type VoucherCreateInput = {
@@ -340,6 +352,7 @@ export type VoucherCreateInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
   event: Prisma.EventCreateNestedOneWithoutVouchersInput
   transactions?: Prisma.TransactionCreateNestedManyWithoutVoucherInput
 }
@@ -354,6 +367,7 @@ export type VoucherUncheckedCreateInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
   transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutVoucherInput
 }
 
@@ -365,6 +379,7 @@ export type VoucherUpdateInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   event?: Prisma.EventUpdateOneRequiredWithoutVouchersNestedInput
   transactions?: Prisma.TransactionUpdateManyWithoutVoucherNestedInput
 }
@@ -379,6 +394,7 @@ export type VoucherUncheckedUpdateInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   transactions?: Prisma.TransactionUncheckedUpdateManyWithoutVoucherNestedInput
 }
 
@@ -392,6 +408,7 @@ export type VoucherCreateManyInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
 }
 
 export type VoucherUpdateManyMutationInput = {
@@ -402,6 +419,7 @@ export type VoucherUpdateManyMutationInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type VoucherUncheckedUpdateManyInput = {
@@ -414,6 +432,7 @@ export type VoucherUncheckedUpdateManyInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type VoucherListRelationFilter = {
@@ -441,6 +460,7 @@ export type VoucherCountOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   usageLimit?: Prisma.SortOrder
   usedCount?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
 }
 
 export type VoucherAvgOrderByAggregateInput = {
@@ -461,6 +481,7 @@ export type VoucherMaxOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   usageLimit?: Prisma.SortOrder
   usedCount?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
 }
 
 export type VoucherMinOrderByAggregateInput = {
@@ -473,6 +494,7 @@ export type VoucherMinOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   usageLimit?: Prisma.SortOrder
   usedCount?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
 }
 
 export type VoucherSumOrderByAggregateInput = {
@@ -558,6 +580,7 @@ export type VoucherCreateWithoutEventInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
   transactions?: Prisma.TransactionCreateNestedManyWithoutVoucherInput
 }
 
@@ -570,6 +593,7 @@ export type VoucherUncheckedCreateWithoutEventInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
   transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutVoucherInput
 }
 
@@ -612,6 +636,7 @@ export type VoucherScalarWhereInput = {
   endDate?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   usageLimit?: Prisma.IntFilter<"Voucher"> | number
   usedCount?: Prisma.IntFilter<"Voucher"> | number
+  isActive?: Prisma.BoolFilter<"Voucher"> | boolean
 }
 
 export type VoucherCreateWithoutTransactionsInput = {
@@ -622,6 +647,7 @@ export type VoucherCreateWithoutTransactionsInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
   event: Prisma.EventCreateNestedOneWithoutVouchersInput
 }
 
@@ -635,6 +661,7 @@ export type VoucherUncheckedCreateWithoutTransactionsInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
 }
 
 export type VoucherCreateOrConnectWithoutTransactionsInput = {
@@ -661,6 +688,7 @@ export type VoucherUpdateWithoutTransactionsInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   event?: Prisma.EventUpdateOneRequiredWithoutVouchersNestedInput
 }
 
@@ -674,6 +702,7 @@ export type VoucherUncheckedUpdateWithoutTransactionsInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type VoucherCreateManyEventInput = {
@@ -685,6 +714,7 @@ export type VoucherCreateManyEventInput = {
   endDate: Date | string
   usageLimit: number
   usedCount?: number
+  isActive?: boolean
 }
 
 export type VoucherUpdateWithoutEventInput = {
@@ -695,6 +725,7 @@ export type VoucherUpdateWithoutEventInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   transactions?: Prisma.TransactionUpdateManyWithoutVoucherNestedInput
 }
 
@@ -707,6 +738,7 @@ export type VoucherUncheckedUpdateWithoutEventInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   transactions?: Prisma.TransactionUncheckedUpdateManyWithoutVoucherNestedInput
 }
 
@@ -719,6 +751,7 @@ export type VoucherUncheckedUpdateManyWithoutEventInput = {
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   usedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -762,6 +795,7 @@ export type VoucherSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   endDate?: boolean
   usageLimit?: boolean
   usedCount?: boolean
+  isActive?: boolean
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   transactions?: boolean | Prisma.Voucher$transactionsArgs<ExtArgs>
   _count?: boolean | Prisma.VoucherCountOutputTypeDefaultArgs<ExtArgs>
@@ -777,6 +811,7 @@ export type VoucherSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   endDate?: boolean
   usageLimit?: boolean
   usedCount?: boolean
+  isActive?: boolean
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["voucher"]>
 
@@ -790,6 +825,7 @@ export type VoucherSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   endDate?: boolean
   usageLimit?: boolean
   usedCount?: boolean
+  isActive?: boolean
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["voucher"]>
 
@@ -803,9 +839,10 @@ export type VoucherSelectScalar = {
   endDate?: boolean
   usageLimit?: boolean
   usedCount?: boolean
+  isActive?: boolean
 }
 
-export type VoucherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "code" | "discountAmount" | "discountType" | "startDate" | "endDate" | "usageLimit" | "usedCount", ExtArgs["result"]["voucher"]>
+export type VoucherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "code" | "discountAmount" | "discountType" | "startDate" | "endDate" | "usageLimit" | "usedCount" | "isActive", ExtArgs["result"]["voucher"]>
 export type VoucherInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   transactions?: boolean | Prisma.Voucher$transactionsArgs<ExtArgs>
@@ -834,6 +871,7 @@ export type $VoucherPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     endDate: Date
     usageLimit: number
     usedCount: number
+    isActive: boolean
   }, ExtArgs["result"]["voucher"]>
   composites: {}
 }
@@ -1268,6 +1306,7 @@ export interface VoucherFieldRefs {
   readonly endDate: Prisma.FieldRef<"Voucher", 'DateTime'>
   readonly usageLimit: Prisma.FieldRef<"Voucher", 'Int'>
   readonly usedCount: Prisma.FieldRef<"Voucher", 'Int'>
+  readonly isActive: Prisma.FieldRef<"Voucher", 'Boolean'>
 }
     
 

@@ -7,7 +7,7 @@ export class TransactionRouter {
 
   constructor(
     private transactionController: TransactionController,
-    private authMiddleware: AuthMiddleware
+    private authMiddleware: AuthMiddleware,
   ) {
     this.router = express.Router();
     this.initRoutes();
@@ -16,7 +16,7 @@ export class TransactionRouter {
   private initRoutes = () => {
     // Middleware shorthand
     const authenticate = this.authMiddleware.verifyToken(
-      process.env.JWT_SECRET || "secret"
+      process.env.JWT_SECRET || "secret",
     );
     const authorize = this.authMiddleware.verifyRole;
 
@@ -24,33 +24,33 @@ export class TransactionRouter {
     this.router.post(
       "/events/:eventId/transactions",
       authenticate,
-      this.transactionController.createTransaction
+      this.transactionController.createTransaction,
     );
     this.router.get(
       "/me/transactions",
       authenticate,
-      this.transactionController.getMyTransactions
+      this.transactionController.getMyTransactions,
     );
     this.router.get(
       "/transactions/:id",
       authenticate,
-      this.transactionController.getTransactionById
+      this.transactionController.getTransactionById,
     );
     this.router.put(
       "/transactions/:id/payment-proof",
       authenticate,
-      this.transactionController.uploadPaymentProof
+      this.transactionController.uploadPaymentProof,
     );
     this.router.put(
       "/transactions/:id/cancel",
       authenticate,
-      this.transactionController.cancelTransaction
+      this.transactionController.cancelTransaction,
     );
     this.router.get(
       "/organizer/transactions",
       authenticate,
       authorize(["ORGANIZER"]),
-      this.transactionController.getOrganizerTransactions
+      this.transactionController.getOrganizerTransactions,
     );
 
     // Organizer routes
@@ -58,14 +58,24 @@ export class TransactionRouter {
       "/transactions/:id/confirm",
       authenticate,
       authorize(["ORGANIZER"]),
-      this.transactionController.confirmTransaction
+      this.transactionController.confirmTransaction,
     );
     this.router.put(
       "/transactions/:id/reject",
       authenticate,
       authorize(["ORGANIZER"]),
-      this.transactionController.rejectTransaction
+      this.transactionController.rejectTransaction,
     );
+
+    // Ticket routes
+    this.router.get(
+      "/transactions/:id/tickets",
+      authenticate,
+      this.transactionController.getTickets,
+    );
+
+    // Check-in (public — QR token acts as auth)
+    this.router.get("/check-in/:token", this.transactionController.checkIn);
   };
 
   getRouter = () => {

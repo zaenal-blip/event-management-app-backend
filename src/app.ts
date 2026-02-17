@@ -29,6 +29,9 @@ import { DashboardRouter } from "./modules/dashboard/dashboard.router.js";
 import { OrganizerService } from "./modules/organizer/organizer.service.js";
 import { OrganizerController } from "./modules/organizer/organizer.controller.js";
 import { OrganizerRouter } from "./modules/organizer/organizer.router.js";
+import { NotificationService } from "./modules/notification/notification.service.js";
+import { NotificationController } from "./modules/notification/notification.controller.js";
+import { NotificationRouter } from "./modules/notification/notification.router.js";
 
 import { CloudinaryService } from "./modules/cloudinary/cloudinary.service.js";
 import { MailService } from "./modules/mail/mail.service.js";
@@ -62,6 +65,7 @@ export class App {
     // services
     const cloudinaryService = new CloudinaryService();
     const mailService = new MailService();
+    const notificationService = new NotificationService(prismaClient);
     const authService = new AuthService(prismaClient, mailService);
     const userService = new UserService(
       prismaClient,
@@ -70,7 +74,11 @@ export class App {
     );
     const referralService = new ReferralService(prismaClient);
     const eventService = new EventService(prismaClient);
-    const transactionService = new TransactionService(prismaClient);
+    const transactionService = new TransactionService(
+      prismaClient,
+      mailService,
+      notificationService,
+    );
     const reviewService = new ReviewService(prismaClient);
     const dashboardService = new DashboardService(prismaClient);
     const organizerService = new OrganizerService(prismaClient);
@@ -86,6 +94,9 @@ export class App {
       prismaClient,
     );
     const organizerController = new OrganizerController(organizerService);
+    const notificationController = new NotificationController(
+      notificationService,
+    );
 
     // middlewares
     const authMiddleware = new AuthMiddleware();
@@ -117,6 +128,10 @@ export class App {
       organizerController,
       authMiddleware,
     );
+    const notificationRouter = new NotificationRouter(
+      notificationController,
+      authMiddleware,
+    );
 
     // entry point
     this.app.use("/auth", authRouter.getRouter());
@@ -128,6 +143,7 @@ export class App {
     this.app.use("/media", mediaRouter.getRouter());
     this.app.use("/dashboard", dashboardRouter.getRouter());
     this.app.use("/organizer", organizerRouter.getRouter());
+    this.app.use("/notifications", notificationRouter.getRouter());
 
     // serve uploaded files
     this.app.use("/uploads", express.static("uploads"));
