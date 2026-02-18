@@ -6,6 +6,7 @@ import {
   CreateVoucherBody,
 } from "../../types/event.js";
 import { CreateEventDto, CreateTicketTypeDto } from "./dto/create-event.dto.js";
+import { UpdateEventDto } from "./dto/update-event.dto.js";
 
 export class EventService {
   constructor(private prisma: PrismaClient) { }
@@ -476,5 +477,128 @@ export class EventService {
     });
 
     return attendees;
+  };
+
+  updateEvent = async (eventId: number, userId: number, body: UpdateEventDto) => {
+    // 1️⃣ Find event
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+      include: { ticketTypes: true }
+    });
+
+    if (!event) {
+      throw new ApiError("Event not found", 404);
+    }
+
+    // 2️⃣ Validate ownership
+    const organizer = await this.getOrCreateOrganizer(userId);
+    if (event.organizerId !== organizer.id) {
+      throw new ApiError("Unauthorized to update this event", 403);
+    }
+
+    // 3️⃣ Validate seats
+    // User requirement: Count sold tickets where transaction status = "COMPLETED" (DONE in our system)
+    const transactionAggregate = await this.prisma.transaction.aggregate({
+      where: {
+        eventId: eventId,
+        status: "DONE",
+      },
+      _sum: {
+        ticketQty: true,
+      },
+    });
+
+    const soldTicketsCount = transactionAggregate._sum.ticketQty || 0;
+
+    if (body.availableSeats !== undefined && body.availableSeats < soldTicketsCount) {
+      throw new ApiError(`Cannot reduce capacity below sold tickets count (${soldTicketsCount})`, 400);
+    }
+
+    // 4️⃣ Validate date
+    const startDate = body.startDate ? new Date(body.startDate) : new Date(event.startDate);
+    const endDate = body.endDate ? new Date(body.endDate) : new Date(event.endDate);
+
+    if (endDate <= startDate) {
+      throw new ApiError("End date must be after start date", 400);
+    }
+
+    // 5️⃣ Update fields
+    // We update the Event and also sync the price/availableSeats to the first ticketType if present
+    // to maintain existing architecture without breaking it.
+    return await this.prisma.$transaction(async (tx) => {
+      const updatedEvent = await tx.event.update({
+        where: { id: eventId },
+        data: {
+          title: body.title,
+          description: body.description,
+          category: body.category,
+          location: body.location,
+          venue: body.venue,
+          startDate: body.startDate ? new Date(body.startDate) : undefined,
+          endDate: body.endDate ? new Date(body.endDate) : undefined,
+          image: body.image,
+        },
+        include: { ticketTypes: true }
+      });
+
+      // Update the first ticket type if price or availableSeats provided
+      if (updatedEvent.ticketTypes.length > 0 && (body.price !== undefined || body.availableSeats !== undefined)) {
+        const firstTicket = updatedEvent.ticketTypes[0];
+
+        // Calculate new availableSeat (remaining) if total capacity changed
+        let newAvailableSeat = firstTicket.availableSeat;
+        if (body.availableSeats !== undefined) {
+          const soldForThisType = firstTicket.totalSeat - firstTicket.availableSeat;
+          newAvailableSeat = body.availableSeats - soldForThisType;
+        }
+
+        await tx.ticketType.update({
+          where: { id: firstTicket.id },
+          data: {
+            price: body.price !== undefined ? body.price : undefined,
+            totalSeat: body.availableSeats !== undefined ? body.availableSeats : undefined,
+            availableSeat: newAvailableSeat
+          }
+        });
+      }
+
+      return updatedEvent;
+    });
+  };
+
+  deleteEvent = async (eventId: number, userId: number) => {
+    // 1️⃣ Find event
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+
+    if (!event) {
+      throw new ApiError("Event not found", 404);
+    }
+
+    // 2️⃣ Validate ownership
+    const organizer = await this.getOrCreateOrganizer(userId);
+    if (event.organizerId !== organizer.id) {
+      throw new ApiError("Unauthorized to delete this event", 403);
+    }
+
+    // 3️⃣ Check if any transaction exists with status "DONE"
+    const existingTransaction = await this.prisma.transaction.findFirst({
+      where: {
+        eventId: eventId,
+        status: "DONE",
+      },
+    });
+
+    if (existingTransaction) {
+      throw new ApiError("Cannot delete event with existing transactions", 400);
+    }
+
+    // 4️⃣ Perform delete
+    // Note: schema.prisma has onDelete: Cascade for many relations, 
+    // but we've already blocked deletion if transactions exist.
+    return await this.prisma.event.delete({
+      where: { id: eventId },
+    });
   };
 }

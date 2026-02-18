@@ -16,7 +16,7 @@ export class TransactionService {
     private prisma: PrismaClient,
     private mailService: MailService,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 
   createTransaction = async (
     userId: number,
@@ -47,7 +47,7 @@ export class TransactionService {
       // Prisma doesn't support "FOR UPDATE" natively yet
       console.log(`[DEBUG] Locking ticketType ${ticketTypeId}`);
       const ticketTypes = await tx.$queryRaw<any[]>`
-        SELECT * FROM "ticket_types"
+        SELECT * FROM "backend"."ticket_types"
         WHERE id = ${ticketTypeId}
         FOR UPDATE
       `;
@@ -584,15 +584,15 @@ export class TransactionService {
       const voucherDiscount = updatedTransaction.voucher
         ? updatedTransaction.voucher.discountType === "PERCENTAGE"
           ? Math.floor(
-              subtotal * (updatedTransaction.voucher.discountAmount / 100),
-            )
+            subtotal * (updatedTransaction.voucher.discountAmount / 100),
+          )
           : Math.min(updatedTransaction.voucher.discountAmount, subtotal)
         : 0;
       const couponDiscount = updatedTransaction.coupon
         ? Math.min(
-            updatedTransaction.coupon.discountAmount,
-            subtotal - voucherDiscount,
-          )
+          updatedTransaction.coupon.discountAmount,
+          subtotal - voucherDiscount,
+        )
         : 0;
       const pointsUsedAmount = updatedTransaction.pointsUsed;
 

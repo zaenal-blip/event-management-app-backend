@@ -216,7 +216,6 @@ model Transaction {
   ticketType TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
   voucher    Voucher?   @relation(fields: [voucherId], references: [id], onDelete: SetNull)
   coupon     Coupon?    @relation(fields: [couponId], references: [id], onDelete: SetNull)
-  review     Review?
   payment    Payment?
   attendees  Attendee[]
 
@@ -224,19 +223,17 @@ model Transaction {
 }
 
 model Review {
-  id            Int      @id @default(autoincrement())
-  userId        Int
-  eventId       Int
-  transactionId Int      @unique
-  rating        Int      @db.SmallInt
-  comment       String   @db.Text
-  createdAt     DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String?
+  userId    Int
+  eventId   Int
+  createdAt DateTime @default(now())
 
-  // Relations
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event       Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 
+  @@unique([userId, eventId])
   @@map("reviews")
 }
 

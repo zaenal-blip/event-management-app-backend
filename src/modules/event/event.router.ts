@@ -3,6 +3,7 @@ import { EventController } from "./event.controller.js";
 import { AuthMiddleware } from "../../middleware/auth.middleware.js";
 import { ValidationMiddleware } from "../../middleware/validation.middleware.js";
 import { CreateEventDto } from "./dto/create-event.dto.js";
+import { UpdateEventDto } from "./dto/update-event.dto.js";
 
 export class EventRouter {
   private router: Router;
@@ -58,6 +59,21 @@ export class EventRouter {
       authenticate,
       authorize(["ORGANIZER"]),
       this.eventController.publishEvent
+    );
+
+    this.router.patch(
+      "/:id",
+      authenticate,
+      authorize(["ORGANIZER"]),
+      this.validationMiddleware.validateBody(UpdateEventDto),
+      this.eventController.updateEvent
+    );
+
+    this.router.delete(
+      "/:id",
+      authenticate,
+      authorize(["ORGANIZER"]),
+      this.eventController.deleteEvent
     );
   };
 

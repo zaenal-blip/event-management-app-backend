@@ -3,7 +3,7 @@ import { ApiError } from "../../utils/api-error.js";
 import { CreateReviewBody } from "../../types/review.js";
 
 export class ReviewService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient) { }
 
   getEventReviews = async (eventId: number) => {
     const reviews = await this.prisma.review.findMany({
@@ -11,16 +11,19 @@ export class ReviewService {
       include: {
         user: {
           select: {
-            id: true,
             name: true,
-            avatar: true,
           },
         },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    return reviews;
+    return reviews.map((r) => ({
+      rating: r.rating,
+      comment: r.comment,
+      reviewerName: r.user.name,
+      createdAt: r.createdAt,
+    }));
   };
 
   createReview = async (
@@ -30,12 +33,7 @@ export class ReviewService {
   ) => {
     const { rating, comment } = body;
 
-    // Validate rating
-    if (rating < 1 || rating > 5) {
-      throw new ApiError("Rating must be between 1 and 5", 400);
-    }
-
-    // Check if event exists
+    // 1️⃣ Find event
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
     });
@@ -44,32 +42,47 @@ export class ReviewService {
       throw new ApiError("Event not found", 404);
     }
 
-    // Check if event has ended
-    if (new Date(event.endDate) > new Date()) {
-      throw new ApiError("You can only review events that have ended", 400);
+    // 2️⃣ If event.endDate >= now() → 403 "Event not finished yet"
+    if (new Date(event.endDate) >= new Date()) {
+      throw new ApiError("Event not finished yet", 403);
     }
 
-    // Check if user has a completed transaction for this event
+    // 3️⃣ Find transaction where:
+    // transaction.userId = req.user.id
+    // transaction.status = "DONE" (system uses DONE for completed)
+    // transaction.ticketType.eventId = eventId
     const completedTransaction = await this.prisma.transaction.findFirst({
       where: {
         userId,
-        eventId,
         status: "DONE",
+        ticketType: {
+          eventId: eventId
+        }
       },
     });
 
     if (!completedTransaction) {
-      throw new ApiError(
-        "You can only review events you have attended (completed transaction required)",
-        403,
-      );
+      throw new ApiError("You did not attend this event", 403);
     }
 
-    // Check if user already reviewed this event
-    const existingReview = await this.prisma.review.findFirst({
+    // 4️⃣ If event.organizerId === req.user.id → 403 "Organizer cannot review own event"
+    // Note: event.organizerId refers to the Organizer profile ID.
+    // We need to check if the user is the owner of that organizer profile.
+    const organizer = await this.prisma.organizer.findUnique({
+      where: { id: event.organizerId }
+    });
+
+    if (organizer?.userId === userId) {
+      throw new ApiError("Organizer cannot review own event", 403);
+    }
+
+    // 5️⃣ Check duplicate review → 400
+    const existingReview = await this.prisma.review.findUnique({
       where: {
-        userId,
-        eventId,
+        userId_eventId: {
+          userId,
+          eventId,
+        },
       },
     });
 
@@ -77,12 +90,16 @@ export class ReviewService {
       throw new ApiError("You have already reviewed this event", 400);
     }
 
+    // 6️⃣ Validate rating 1–5 → 400
+    if (rating < 1 || rating > 5) {
+      throw new ApiError("Rating must be between 1 and 5", 400);
+    }
+
     // Create review
     const review = await this.prisma.review.create({
       data: {
         userId,
         eventId,
-        transactionId: completedTransaction.id,
         rating,
         comment,
       },
@@ -96,9 +113,6 @@ export class ReviewService {
         },
       },
     });
-
-    // Update organizer rating
-    await this.updateOrganizerRating(event.organizerId);
 
     return review;
   };
@@ -137,47 +151,48 @@ export class ReviewService {
       throw new ApiError("Organizer not found", 404);
     }
 
-    // Calculate average rating from all reviews
-    const allReviews = organizer.events.flatMap((e) => e.reviews);
-    const avgRating =
-      allReviews.length > 0
-        ? allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length
-        : 0;
+    // Aggregation Rule: Calculate from all reviews where review.event.organizerId = organizerId
+    const aggregate = await this.prisma.review.aggregate({
+      where: {
+        event: {
+          organizerId: organizerId,
+        },
+      },
+      _avg: {
+        rating: true,
+      },
+      _count: {
+        id: true,
+      },
+    });
 
-    return {
-      ...organizer,
-      rating: avgRating,
-      totalReviews: allReviews.length,
-      reviews: allReviews,
-    };
-  };
-
-  private updateOrganizerRating = async (organizerId: number) => {
-    const organizer = await this.prisma.organizer.findUnique({
-      where: { id: organizerId },
+    // Get all reviews for the organizer
+    const reviews = await this.prisma.review.findMany({
+      where: {
+        event: {
+          organizerId: organizerId,
+        },
+      },
       include: {
-        events: {
-          include: {
-            reviews: true,
+        user: {
+          select: {
+            name: true,
           },
         },
       },
+      orderBy: { createdAt: "desc" },
     });
 
-    if (!organizer) return;
-
-    const allReviews = organizer.events.flatMap((e) => e.reviews);
-    const avgRating =
-      allReviews.length > 0
-        ? allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length
-        : 0;
-
-    await this.prisma.organizer.update({
-      where: { id: organizerId },
-      data: {
-        rating: avgRating,
-        totalReviews: allReviews.length,
-      },
-    });
+    return {
+      ...organizer,
+      rating: aggregate._avg.rating || 0,
+      totalReviews: aggregate._count.id,
+      reviews: reviews.map((r) => ({
+        rating: r.rating,
+        comment: r.comment,
+        reviewerName: r.user.name,
+        createdAt: r.createdAt,
+      })),
+    };
   };
 }
