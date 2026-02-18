@@ -345,7 +345,6 @@ export type TransactionWhereInput = {
   ticketType?: Prisma.XOR<Prisma.TicketTypeScalarRelationFilter, Prisma.TicketTypeWhereInput>
   voucher?: Prisma.XOR<Prisma.VoucherNullableScalarRelationFilter, Prisma.VoucherWhereInput> | null
   coupon?: Prisma.XOR<Prisma.CouponNullableScalarRelationFilter, Prisma.CouponWhereInput> | null
-  review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   attendees?: Prisma.AttendeeListRelationFilter
 }
@@ -372,7 +371,6 @@ export type TransactionOrderByWithRelationInput = {
   ticketType?: Prisma.TicketTypeOrderByWithRelationInput
   voucher?: Prisma.VoucherOrderByWithRelationInput
   coupon?: Prisma.CouponOrderByWithRelationInput
-  review?: Prisma.ReviewOrderByWithRelationInput
   payment?: Prisma.PaymentOrderByWithRelationInput
   attendees?: Prisma.AttendeeOrderByRelationAggregateInput
 }
@@ -402,7 +400,6 @@ export type TransactionWhereUniqueInput = Prisma.AtLeast<{
   ticketType?: Prisma.XOR<Prisma.TicketTypeScalarRelationFilter, Prisma.TicketTypeWhereInput>
   voucher?: Prisma.XOR<Prisma.VoucherNullableScalarRelationFilter, Prisma.VoucherWhereInput> | null
   coupon?: Prisma.XOR<Prisma.CouponNullableScalarRelationFilter, Prisma.CouponWhereInput> | null
-  review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   attendees?: Prisma.AttendeeListRelationFilter
 }, "id">
@@ -469,7 +466,6 @@ export type TransactionCreateInput = {
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
@@ -491,7 +487,6 @@ export type TransactionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -512,7 +507,6 @@ export type TransactionUpdateInput = {
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
@@ -534,7 +528,6 @@ export type TransactionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -902,20 +895,6 @@ export type EnumTransactionStatusFieldUpdateOperationsInput = {
   set?: $Enums.TransactionStatus
 }
 
-export type TransactionCreateNestedOneWithoutReviewInput = {
-  create?: Prisma.XOR<Prisma.TransactionCreateWithoutReviewInput, Prisma.TransactionUncheckedCreateWithoutReviewInput>
-  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutReviewInput
-  connect?: Prisma.TransactionWhereUniqueInput
-}
-
-export type TransactionUpdateOneRequiredWithoutReviewNestedInput = {
-  create?: Prisma.XOR<Prisma.TransactionCreateWithoutReviewInput, Prisma.TransactionUncheckedCreateWithoutReviewInput>
-  connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutReviewInput
-  upsert?: Prisma.TransactionUpsertWithoutReviewInput
-  connect?: Prisma.TransactionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TransactionUpdateToOneWithWhereWithoutReviewInput, Prisma.TransactionUpdateWithoutReviewInput>, Prisma.TransactionUncheckedUpdateWithoutReviewInput>
-}
-
 export type TransactionCreateNestedOneWithoutPaymentInput = {
   create?: Prisma.XOR<Prisma.TransactionCreateWithoutPaymentInput, Prisma.TransactionUncheckedCreateWithoutPaymentInput>
   connectOrCreate?: Prisma.TransactionCreateOrConnectWithoutPaymentInput
@@ -959,7 +938,6 @@ export type TransactionCreateWithoutUserInput = {
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
@@ -980,7 +958,6 @@ export type TransactionUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1048,7 +1025,6 @@ export type TransactionCreateWithoutEventInput = {
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
@@ -1069,7 +1045,6 @@ export type TransactionUncheckedCreateWithoutEventInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1115,7 +1090,6 @@ export type TransactionCreateWithoutTicketTypeInput = {
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
@@ -1136,7 +1110,6 @@ export type TransactionUncheckedCreateWithoutTicketTypeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1182,7 +1155,6 @@ export type TransactionCreateWithoutVoucherInput = {
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
@@ -1203,7 +1175,6 @@ export type TransactionUncheckedCreateWithoutVoucherInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1249,7 +1220,6 @@ export type TransactionCreateWithoutCouponInput = {
   event: Prisma.EventCreateNestedOneWithoutTransactionsInput
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
@@ -1270,7 +1240,6 @@ export type TransactionUncheckedCreateWithoutCouponInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
@@ -1301,104 +1270,6 @@ export type TransactionUpdateManyWithWhereWithoutCouponInput = {
   data: Prisma.XOR<Prisma.TransactionUpdateManyMutationInput, Prisma.TransactionUncheckedUpdateManyWithoutCouponInput>
 }
 
-export type TransactionCreateWithoutReviewInput = {
-  ticketQty: number
-  totalPrice: number
-  pointsUsed?: number
-  finalPrice: number
-  status?: $Enums.TransactionStatus
-  paymentProof?: string | null
-  expiredAt: Date | string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  rejectionReason?: string | null
-  user: Prisma.UserCreateNestedOneWithoutTransactionsInput
-  event: Prisma.EventCreateNestedOneWithoutTransactionsInput
-  ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
-  voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
-  coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
-  attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
-}
-
-export type TransactionUncheckedCreateWithoutReviewInput = {
-  id?: number
-  userId: number
-  eventId: number
-  ticketTypeId: number
-  voucherId?: number | null
-  couponId?: number | null
-  ticketQty: number
-  totalPrice: number
-  pointsUsed?: number
-  finalPrice: number
-  status?: $Enums.TransactionStatus
-  paymentProof?: string | null
-  expiredAt: Date | string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  rejectionReason?: string | null
-  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
-  attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
-}
-
-export type TransactionCreateOrConnectWithoutReviewInput = {
-  where: Prisma.TransactionWhereUniqueInput
-  create: Prisma.XOR<Prisma.TransactionCreateWithoutReviewInput, Prisma.TransactionUncheckedCreateWithoutReviewInput>
-}
-
-export type TransactionUpsertWithoutReviewInput = {
-  update: Prisma.XOR<Prisma.TransactionUpdateWithoutReviewInput, Prisma.TransactionUncheckedUpdateWithoutReviewInput>
-  create: Prisma.XOR<Prisma.TransactionCreateWithoutReviewInput, Prisma.TransactionUncheckedCreateWithoutReviewInput>
-  where?: Prisma.TransactionWhereInput
-}
-
-export type TransactionUpdateToOneWithWhereWithoutReviewInput = {
-  where?: Prisma.TransactionWhereInput
-  data: Prisma.XOR<Prisma.TransactionUpdateWithoutReviewInput, Prisma.TransactionUncheckedUpdateWithoutReviewInput>
-}
-
-export type TransactionUpdateWithoutReviewInput = {
-  ticketQty?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  pointsUsed?: Prisma.IntFieldUpdateOperationsInput | number
-  finalPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
-  paymentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  user?: Prisma.UserUpdateOneRequiredWithoutTransactionsNestedInput
-  event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
-  ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
-  voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
-  coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
-  attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
-}
-
-export type TransactionUncheckedUpdateWithoutReviewInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  eventId?: Prisma.IntFieldUpdateOperationsInput | number
-  ticketTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  voucherId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  couponId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  ticketQty?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  pointsUsed?: Prisma.IntFieldUpdateOperationsInput | number
-  finalPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
-  paymentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  expiredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
-  attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
-}
-
 export type TransactionCreateWithoutPaymentInput = {
   ticketQty: number
   totalPrice: number
@@ -1415,7 +1286,6 @@ export type TransactionCreateWithoutPaymentInput = {
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeCreateNestedManyWithoutTransactionInput
 }
 
@@ -1436,7 +1306,6 @@ export type TransactionUncheckedCreateWithoutPaymentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   attendees?: Prisma.AttendeeUncheckedCreateNestedManyWithoutTransactionInput
 }
 
@@ -1472,7 +1341,6 @@ export type TransactionUpdateWithoutPaymentInput = {
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
 
@@ -1493,7 +1361,6 @@ export type TransactionUncheckedUpdateWithoutPaymentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
 
@@ -1513,7 +1380,6 @@ export type TransactionCreateWithoutAttendeesInput = {
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutTransactionsInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutTransactionsInput
   coupon?: Prisma.CouponCreateNestedOneWithoutTransactionsInput
-  review?: Prisma.ReviewCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
 }
 
@@ -1534,7 +1400,6 @@ export type TransactionUncheckedCreateWithoutAttendeesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   rejectionReason?: string | null
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutTransactionInput
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutTransactionInput
 }
 
@@ -1570,7 +1435,6 @@ export type TransactionUpdateWithoutAttendeesInput = {
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
 }
 
@@ -1591,7 +1455,6 @@ export type TransactionUncheckedUpdateWithoutAttendeesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
 }
 
@@ -1628,7 +1491,6 @@ export type TransactionUpdateWithoutUserInput = {
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
@@ -1649,7 +1511,6 @@ export type TransactionUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -1705,7 +1566,6 @@ export type TransactionUpdateWithoutEventInput = {
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
@@ -1726,7 +1586,6 @@ export type TransactionUncheckedUpdateWithoutEventInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -1782,7 +1641,6 @@ export type TransactionUpdateWithoutTicketTypeInput = {
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
@@ -1803,7 +1661,6 @@ export type TransactionUncheckedUpdateWithoutTicketTypeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -1859,7 +1716,6 @@ export type TransactionUpdateWithoutVoucherInput = {
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   coupon?: Prisma.CouponUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
@@ -1880,7 +1736,6 @@ export type TransactionUncheckedUpdateWithoutVoucherInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -1936,7 +1791,6 @@ export type TransactionUpdateWithoutCouponInput = {
   event?: Prisma.EventUpdateOneRequiredWithoutTransactionsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutTransactionsNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutTransactionsNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUpdateManyWithoutTransactionNestedInput
 }
@@ -1957,7 +1811,6 @@ export type TransactionUncheckedUpdateWithoutCouponInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutTransactionNestedInput
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutTransactionNestedInput
   attendees?: Prisma.AttendeeUncheckedUpdateManyWithoutTransactionNestedInput
 }
@@ -2033,7 +1886,6 @@ export type TransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   ticketType?: boolean | Prisma.TicketTypeDefaultArgs<ExtArgs>
   voucher?: boolean | Prisma.Transaction$voucherArgs<ExtArgs>
   coupon?: boolean | Prisma.Transaction$couponArgs<ExtArgs>
-  review?: boolean | Prisma.Transaction$reviewArgs<ExtArgs>
   payment?: boolean | Prisma.Transaction$paymentArgs<ExtArgs>
   attendees?: boolean | Prisma.Transaction$attendeesArgs<ExtArgs>
   _count?: boolean | Prisma.TransactionCountOutputTypeDefaultArgs<ExtArgs>
@@ -2113,7 +1965,6 @@ export type TransactionInclude<ExtArgs extends runtime.Types.Extensions.Internal
   ticketType?: boolean | Prisma.TicketTypeDefaultArgs<ExtArgs>
   voucher?: boolean | Prisma.Transaction$voucherArgs<ExtArgs>
   coupon?: boolean | Prisma.Transaction$couponArgs<ExtArgs>
-  review?: boolean | Prisma.Transaction$reviewArgs<ExtArgs>
   payment?: boolean | Prisma.Transaction$paymentArgs<ExtArgs>
   attendees?: boolean | Prisma.Transaction$attendeesArgs<ExtArgs>
   _count?: boolean | Prisma.TransactionCountOutputTypeDefaultArgs<ExtArgs>
@@ -2141,7 +1992,6 @@ export type $TransactionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     ticketType: Prisma.$TicketTypePayload<ExtArgs>
     voucher: Prisma.$VoucherPayload<ExtArgs> | null
     coupon: Prisma.$CouponPayload<ExtArgs> | null
-    review: Prisma.$ReviewPayload<ExtArgs> | null
     payment: Prisma.$PaymentPayload<ExtArgs> | null
     attendees: Prisma.$AttendeePayload<ExtArgs>[]
   }
@@ -2561,7 +2411,6 @@ export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends runt
   ticketType<T extends Prisma.TicketTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TicketTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__TicketTypeClient<runtime.Types.Result.GetResult<Prisma.$TicketTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   voucher<T extends Prisma.Transaction$voucherArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$voucherArgs<ExtArgs>>): Prisma.Prisma__VoucherClient<runtime.Types.Result.GetResult<Prisma.$VoucherPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   coupon<T extends Prisma.Transaction$couponArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$couponArgs<ExtArgs>>): Prisma.Prisma__CouponClient<runtime.Types.Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  review<T extends Prisma.Transaction$reviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$reviewArgs<ExtArgs>>): Prisma.Prisma__ReviewClient<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payment<T extends Prisma.Transaction$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   attendees<T extends Prisma.Transaction$attendeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$attendeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3040,25 +2889,6 @@ export type Transaction$couponArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.CouponInclude<ExtArgs> | null
   where?: Prisma.CouponWhereInput
-}
-
-/**
- * Transaction.review
- */
-export type Transaction$reviewArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Review
-   */
-  select?: Prisma.ReviewSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Review
-   */
-  omit?: Prisma.ReviewOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ReviewInclude<ExtArgs> | null
-  where?: Prisma.ReviewWhereInput
 }
 
 /**

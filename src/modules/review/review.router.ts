@@ -25,7 +25,7 @@ export class ReviewRouter {
       this.reviewController.getEventReviews
     );
     this.router.get(
-      "/organizers/:organizerId/profile",
+      "/organizers/:organizerId",
       this.reviewController.getOrganizerProfile
     );
 

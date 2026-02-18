@@ -1,4 +1,5 @@
 import express from "express";
+
 import cors from "cors";
 import { prisma } from "./lib/prisma.js";
 import { ApiError } from "./utils/api-error.js";
@@ -162,8 +163,10 @@ export class App {
       ) => {
         const message = err.message || "Something went wrong!";
         const status = err.status || 500;
+
         console.error(`[ERROR] ${status} - ${message}`, err);
         res.status(status).send({ message });
+
       },
     );
 

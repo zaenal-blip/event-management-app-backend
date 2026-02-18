@@ -3,6 +3,7 @@ import { EventService } from "./event.service.js";
 import { AuthRequest } from "../../middleware/auth.middleware.js";
 import { GetEventsQuery } from "../../types/event.js";
 import { CreateEventDto } from "./dto/create-event.dto.js";
+import { UpdateEventDto } from "./dto/update-event.dto.js";
 
 export class EventController {
   constructor(private eventService: EventService) { }
@@ -100,5 +101,37 @@ export class EventController {
 
     const result = await this.eventService.getOrganizerAttendees(req.user.id);
     res.status(200).send(result);
+  };
+
+  updateEvent = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const eventId = Number(req.params.id);
+    if (isNaN(eventId)) {
+      return res.status(400).send({ message: "Invalid event ID" });
+    }
+
+    const result = await this.eventService.updateEvent(
+      eventId,
+      req.user.id,
+      req.body as UpdateEventDto,
+    );
+    res.status(200).send(result);
+  };
+
+  deleteEvent = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const eventId = Number(req.params.id);
+    if (isNaN(eventId)) {
+      return res.status(400).send({ message: "Invalid event ID" });
+    }
+
+    await this.eventService.deleteEvent(eventId, req.user.id);
+    res.status(200).send({ message: "Event deleted successfully" });
   };
 }

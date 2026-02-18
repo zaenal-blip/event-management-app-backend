@@ -2181,11 +2181,10 @@ export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[key
 
 export const ReviewScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  eventId: 'eventId',
-  transactionId: 'transactionId',
   rating: 'rating',
   comment: 'comment',
+  userId: 'userId',
+  eventId: 'eventId',
   createdAt: 'createdAt'
 } as const
 
