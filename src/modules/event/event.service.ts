@@ -329,6 +329,14 @@ export class EventService {
       );
     }
 
+    // Validate event has not ended
+    if (new Date().getTime() > new Date(event.endDate).getTime()) {
+      throw new ApiError(
+        "Cannot create voucher for an ended event",
+        400,
+      );
+    }
+
     const startDate = new Date(body.startDate);
     const endDate = new Date(body.endDate);
 

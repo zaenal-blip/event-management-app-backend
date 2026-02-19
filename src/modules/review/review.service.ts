@@ -26,6 +26,18 @@ export class ReviewService {
     }));
   };
 
+  getUserCheckInStatus = async (userId: number, eventId: number) => {
+    const attendee = await this.prisma.attendee.findFirst({
+      where: {
+        userId,
+        eventId,
+        checkedIn: true,
+      },
+    });
+
+    return { checkedIn: !!attendee };
+  };
+
   createReview = async (
     userId: number,
     eventId: number,
@@ -42,27 +54,17 @@ export class ReviewService {
       throw new ApiError("Event not found", 404);
     }
 
-    // 2️⃣ If event.endDate >= now() → 403 "Event not finished yet"
-    if (new Date(event.endDate) >= new Date()) {
-      throw new ApiError("Event not finished yet", 403);
-    }
-
-    // 3️⃣ Find transaction where:
-    // transaction.userId = req.user.id
-    // transaction.status = "DONE" (system uses DONE for completed)
-    // transaction.ticketType.eventId = eventId
-    const completedTransaction = await this.prisma.transaction.findFirst({
+    // 2️⃣ Check if user has checked in to this event
+    const checkedInAttendee = await this.prisma.attendee.findFirst({
       where: {
         userId,
-        status: "DONE",
-        ticketType: {
-          eventId: eventId
-        }
+        eventId,
+        checkedIn: true,
       },
     });
 
-    if (!completedTransaction) {
-      throw new ApiError("You did not attend this event", 403);
+    if (!checkedInAttendee) {
+      throw new ApiError("You must check in to the event before leaving a review", 403);
     }
 
     // 4️⃣ If event.organizerId === req.user.id → 403 "Organizer cannot review own event"
