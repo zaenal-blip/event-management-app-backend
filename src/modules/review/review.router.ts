@@ -30,6 +30,11 @@ export class ReviewRouter {
     );
 
     // Protected routes
+    this.router.get(
+      "/events/:eventId/check-in-status",
+      authenticate,
+      this.reviewController.getUserCheckInStatus
+    );
     this.router.post(
       "/events/:eventId/reviews",
       authenticate,

@@ -3,11 +3,24 @@ import { ReviewService } from "./review.service.js";
 import { AuthRequest } from "../../middleware/auth.middleware.js";
 
 export class ReviewController {
-  constructor(private reviewService: ReviewService) {}
+  constructor(private reviewService: ReviewService) { }
 
   getEventReviews = async (req: Request, res: Response) => {
     const eventId = Number(req.params.eventId);
     const result = await this.reviewService.getEventReviews(eventId);
+    res.status(200).send(result);
+  };
+
+  getUserCheckInStatus = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const eventId = Number(req.params.eventId);
+    const result = await this.reviewService.getUserCheckInStatus(
+      req.user.id,
+      eventId
+    );
     res.status(200).send(result);
   };
 
