@@ -46,6 +46,7 @@ export type EventMinAggregateOutputType = {
   venueId: number | null
   categoryId: number | null
   title: string | null
+  slug: string | null
   description: string | null
   image: string | null
   category: string | null
@@ -64,6 +65,7 @@ export type EventMaxAggregateOutputType = {
   venueId: number | null
   categoryId: number | null
   title: string | null
+  slug: string | null
   description: string | null
   image: string | null
   category: string | null
@@ -82,6 +84,7 @@ export type EventCountAggregateOutputType = {
   venueId: number
   categoryId: number
   title: number
+  slug: number
   description: number
   image: number
   category: number
@@ -116,6 +119,7 @@ export type EventMinAggregateInputType = {
   venueId?: true
   categoryId?: true
   title?: true
+  slug?: true
   description?: true
   image?: true
   category?: true
@@ -134,6 +138,7 @@ export type EventMaxAggregateInputType = {
   venueId?: true
   categoryId?: true
   title?: true
+  slug?: true
   description?: true
   image?: true
   category?: true
@@ -152,6 +157,7 @@ export type EventCountAggregateInputType = {
   venueId?: true
   categoryId?: true
   title?: true
+  slug?: true
   description?: true
   image?: true
   category?: true
@@ -257,6 +263,7 @@ export type EventGroupByOutputType = {
   venueId: number | null
   categoryId: number | null
   title: string
+  slug: string
   description: string
   image: string | null
   category: string
@@ -298,6 +305,7 @@ export type EventWhereInput = {
   venueId?: Prisma.IntNullableFilter<"Event"> | number | null
   categoryId?: Prisma.IntNullableFilter<"Event"> | number | null
   title?: Prisma.StringFilter<"Event"> | string
+  slug?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   image?: Prisma.StringNullableFilter<"Event"> | string | null
   category?: Prisma.StringFilter<"Event"> | string
@@ -328,6 +336,7 @@ export type EventOrderByWithRelationInput = {
   venueId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -354,6 +363,7 @@ export type EventOrderByWithRelationInput = {
 
 export type EventWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  slug?: string
   AND?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   OR?: Prisma.EventWhereInput[]
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
@@ -383,7 +393,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   vouchers?: Prisma.VoucherListRelationFilter
   transactions?: Prisma.TransactionListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
-}, "id">
+}, "id" | "slug">
 
 export type EventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -391,6 +401,7 @@ export type EventOrderByWithAggregationInput = {
   venueId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -417,6 +428,7 @@ export type EventScalarWhereWithAggregatesInput = {
   venueId?: Prisma.IntNullableWithAggregatesFilter<"Event"> | number | null
   categoryId?: Prisma.IntNullableWithAggregatesFilter<"Event"> | number | null
   title?: Prisma.StringWithAggregatesFilter<"Event"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"Event"> | string
   description?: Prisma.StringWithAggregatesFilter<"Event"> | string
   image?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
   category?: Prisma.StringWithAggregatesFilter<"Event"> | string
@@ -431,6 +443,7 @@ export type EventScalarWhereWithAggregatesInput = {
 
 export type EventCreateInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -461,6 +474,7 @@ export type EventUncheckedCreateInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -484,6 +498,7 @@ export type EventUncheckedCreateInput = {
 
 export type EventUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -514,6 +529,7 @@ export type EventUncheckedUpdateInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -541,6 +557,7 @@ export type EventCreateManyInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -555,6 +572,7 @@ export type EventCreateManyInput = {
 
 export type EventUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -573,6 +591,7 @@ export type EventUncheckedUpdateManyInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -601,6 +620,7 @@ export type EventCountOrderByAggregateInput = {
   venueId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -626,6 +646,7 @@ export type EventMaxOrderByAggregateInput = {
   venueId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -644,6 +665,7 @@ export type EventMinOrderByAggregateInput = {
   venueId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -926,6 +948,7 @@ export type EventUpdateOneRequiredWithoutWaitlistsNestedInput = {
 
 export type EventCreateWithoutOrganizerInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -954,6 +977,7 @@ export type EventUncheckedCreateWithoutOrganizerInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1010,6 +1034,7 @@ export type EventScalarWhereInput = {
   venueId?: Prisma.IntNullableFilter<"Event"> | number | null
   categoryId?: Prisma.IntNullableFilter<"Event"> | number | null
   title?: Prisma.StringFilter<"Event"> | string
+  slug?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   image?: Prisma.StringNullableFilter<"Event"> | string | null
   category?: Prisma.StringFilter<"Event"> | string
@@ -1024,6 +1049,7 @@ export type EventScalarWhereInput = {
 
 export type EventCreateWithoutTicketTypesInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1053,6 +1079,7 @@ export type EventUncheckedCreateWithoutTicketTypesInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1091,6 +1118,7 @@ export type EventUpdateToOneWithWhereWithoutTicketTypesInput = {
 
 export type EventUpdateWithoutTicketTypesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1120,6 +1148,7 @@ export type EventUncheckedUpdateWithoutTicketTypesInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1142,6 +1171,7 @@ export type EventUncheckedUpdateWithoutTicketTypesInput = {
 
 export type EventCreateWithoutVouchersInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1171,6 +1201,7 @@ export type EventUncheckedCreateWithoutVouchersInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1209,6 +1240,7 @@ export type EventUpdateToOneWithWhereWithoutVouchersInput = {
 
 export type EventUpdateWithoutVouchersInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1238,6 +1270,7 @@ export type EventUncheckedUpdateWithoutVouchersInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1260,6 +1293,7 @@ export type EventUncheckedUpdateWithoutVouchersInput = {
 
 export type EventCreateWithoutTransactionsInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1289,6 +1323,7 @@ export type EventUncheckedCreateWithoutTransactionsInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1327,6 +1362,7 @@ export type EventUpdateToOneWithWhereWithoutTransactionsInput = {
 
 export type EventUpdateWithoutTransactionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1356,6 +1392,7 @@ export type EventUncheckedUpdateWithoutTransactionsInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1378,6 +1415,7 @@ export type EventUncheckedUpdateWithoutTransactionsInput = {
 
 export type EventCreateWithoutReviewsInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1407,6 +1445,7 @@ export type EventUncheckedCreateWithoutReviewsInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1445,6 +1484,7 @@ export type EventUpdateToOneWithWhereWithoutReviewsInput = {
 
 export type EventUpdateWithoutReviewsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1474,6 +1514,7 @@ export type EventUncheckedUpdateWithoutReviewsInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1496,6 +1537,7 @@ export type EventUncheckedUpdateWithoutReviewsInput = {
 
 export type EventCreateWithoutVenueRelInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1524,6 +1566,7 @@ export type EventUncheckedCreateWithoutVenueRelInput = {
   organizerId: number
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1573,6 +1616,7 @@ export type EventUpdateManyWithWhereWithoutVenueRelInput = {
 
 export type EventCreateWithoutCategoryRelInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1601,6 +1645,7 @@ export type EventUncheckedCreateWithoutCategoryRelInput = {
   organizerId: number
   venueId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1650,6 +1695,7 @@ export type EventUpdateManyWithWhereWithoutCategoryRelInput = {
 
 export type EventCreateWithoutAttendeesInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1679,6 +1725,7 @@ export type EventUncheckedCreateWithoutAttendeesInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1717,6 +1764,7 @@ export type EventUpdateToOneWithWhereWithoutAttendeesInput = {
 
 export type EventUpdateWithoutAttendeesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1746,6 +1794,7 @@ export type EventUncheckedUpdateWithoutAttendeesInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1768,6 +1817,7 @@ export type EventUncheckedUpdateWithoutAttendeesInput = {
 
 export type EventCreateWithoutImagesInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1797,6 +1847,7 @@ export type EventUncheckedCreateWithoutImagesInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1835,6 +1886,7 @@ export type EventUpdateToOneWithWhereWithoutImagesInput = {
 
 export type EventUpdateWithoutImagesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1864,6 +1916,7 @@ export type EventUncheckedUpdateWithoutImagesInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1886,6 +1939,7 @@ export type EventUncheckedUpdateWithoutImagesInput = {
 
 export type EventCreateWithoutTagsInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1915,6 +1969,7 @@ export type EventUncheckedCreateWithoutTagsInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -1953,6 +2008,7 @@ export type EventUpdateToOneWithWhereWithoutTagsInput = {
 
 export type EventUpdateWithoutTagsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1982,6 +2038,7 @@ export type EventUncheckedUpdateWithoutTagsInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2004,6 +2061,7 @@ export type EventUncheckedUpdateWithoutTagsInput = {
 
 export type EventCreateWithoutWishlistsInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2033,6 +2091,7 @@ export type EventUncheckedCreateWithoutWishlistsInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2071,6 +2130,7 @@ export type EventUpdateToOneWithWhereWithoutWishlistsInput = {
 
 export type EventUpdateWithoutWishlistsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2100,6 +2160,7 @@ export type EventUncheckedUpdateWithoutWishlistsInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2122,6 +2183,7 @@ export type EventUncheckedUpdateWithoutWishlistsInput = {
 
 export type EventCreateWithoutWaitlistsInput = {
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2151,6 +2213,7 @@ export type EventUncheckedCreateWithoutWaitlistsInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2189,6 +2252,7 @@ export type EventUpdateToOneWithWhereWithoutWaitlistsInput = {
 
 export type EventUpdateWithoutWaitlistsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2218,6 +2282,7 @@ export type EventUncheckedUpdateWithoutWaitlistsInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2243,6 +2308,7 @@ export type EventCreateManyOrganizerInput = {
   venueId?: number | null
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2257,6 +2323,7 @@ export type EventCreateManyOrganizerInput = {
 
 export type EventUpdateWithoutOrganizerInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2285,6 +2352,7 @@ export type EventUncheckedUpdateWithoutOrganizerInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2311,6 +2379,7 @@ export type EventUncheckedUpdateManyWithoutOrganizerInput = {
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2328,6 +2397,7 @@ export type EventCreateManyVenueRelInput = {
   organizerId: number
   categoryId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2342,6 +2412,7 @@ export type EventCreateManyVenueRelInput = {
 
 export type EventUpdateWithoutVenueRelInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2370,6 +2441,7 @@ export type EventUncheckedUpdateWithoutVenueRelInput = {
   organizerId?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2396,6 +2468,7 @@ export type EventUncheckedUpdateManyWithoutVenueRelInput = {
   organizerId?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2413,6 +2486,7 @@ export type EventCreateManyCategoryRelInput = {
   organizerId: number
   venueId?: number | null
   title: string
+  slug: string
   description: string
   image?: string | null
   category: string
@@ -2427,6 +2501,7 @@ export type EventCreateManyCategoryRelInput = {
 
 export type EventUpdateWithoutCategoryRelInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2455,6 +2530,7 @@ export type EventUncheckedUpdateWithoutCategoryRelInput = {
   organizerId?: Prisma.IntFieldUpdateOperationsInput | number
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2481,6 +2557,7 @@ export type EventUncheckedUpdateManyWithoutCategoryRelInput = {
   organizerId?: Prisma.IntFieldUpdateOperationsInput | number
   venueId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2602,6 +2679,7 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   venueId?: boolean
   categoryId?: boolean
   title?: boolean
+  slug?: boolean
   description?: boolean
   image?: boolean
   category?: boolean
@@ -2633,6 +2711,7 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   venueId?: boolean
   categoryId?: boolean
   title?: boolean
+  slug?: boolean
   description?: boolean
   image?: boolean
   category?: boolean
@@ -2654,6 +2733,7 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   venueId?: boolean
   categoryId?: boolean
   title?: boolean
+  slug?: boolean
   description?: boolean
   image?: boolean
   category?: boolean
@@ -2675,6 +2755,7 @@ export type EventSelectScalar = {
   venueId?: boolean
   categoryId?: boolean
   title?: boolean
+  slug?: boolean
   description?: boolean
   image?: boolean
   category?: boolean
@@ -2687,7 +2768,7 @@ export type EventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizerId" | "venueId" | "categoryId" | "title" | "description" | "image" | "category" | "location" | "venue" | "startDate" | "endDate" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizerId" | "venueId" | "categoryId" | "title" | "slug" | "description" | "image" | "category" | "location" | "venue" | "startDate" | "endDate" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organizer?: boolean | Prisma.OrganizerDefaultArgs<ExtArgs>
   venueRel?: boolean | Prisma.Event$venueRelArgs<ExtArgs>
@@ -2736,6 +2817,7 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     venueId: number | null
     categoryId: number | null
     title: string
+    slug: string
     description: string
     image: string | null
     category: string
@@ -3186,6 +3268,7 @@ export interface EventFieldRefs {
   readonly venueId: Prisma.FieldRef<"Event", 'Int'>
   readonly categoryId: Prisma.FieldRef<"Event", 'Int'>
   readonly title: Prisma.FieldRef<"Event", 'String'>
+  readonly slug: Prisma.FieldRef<"Event", 'String'>
   readonly description: Prisma.FieldRef<"Event", 'String'>
   readonly image: Prisma.FieldRef<"Event", 'String'>
   readonly category: Prisma.FieldRef<"Event", 'String'>

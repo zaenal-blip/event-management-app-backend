@@ -40,6 +40,17 @@ export class EventController {
     res.status(200).send(result);
   };
 
+  getEventBySlug = async (req: Request, res: Response) => {
+    const { slug } = req.params;
+
+    if (!slug) {
+      return res.status(400).send({ message: "Slug is required" });
+    }
+
+    const result = await this.eventService.getEventBySlug(slug as string);
+    res.status(200).send(result);
+  };
+
   createEvent = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
       return res.status(401).send({ message: "Unauthorized" });

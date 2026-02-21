@@ -40,7 +40,8 @@ export class EventRouter {
 
     // Public routes
     this.router.get("/", this.eventController.getEvents);
-    this.router.get("/:id", this.eventController.getEventById);
+    this.router.get("/:slug", this.eventController.getEventBySlug);
+    this.router.get("/id/:id", this.eventController.getEventById);
     this.router.post(
       "/",
       authenticate,

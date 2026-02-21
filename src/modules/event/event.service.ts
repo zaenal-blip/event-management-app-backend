@@ -42,6 +42,37 @@ export class EventService {
     return organizer;
   };
 
+  private generateSlug = (title: string): string => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
+  };
+
+  private generateUniqueSlug = async (
+    title: string,
+    prismaClient: PrismaClient | Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
+    excludeEventId?: number,
+  ): Promise<string> => {
+    const baseSlug = this.generateSlug(title);
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (true) {
+      const existing = await (prismaClient as any).event.findUnique({
+        where: { slug },
+      });
+      if (!existing || (excludeEventId && existing.id === excludeEventId)) {
+        break;
+      }
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    return slug;
+  };
+
   getEvents = async (query: GetEventsQuery) => {
     const {
       page,
@@ -249,6 +280,61 @@ export class EventService {
     };
   };
 
+  getEventBySlug = async (slug: string) => {
+    const event = await this.prisma.event.findUnique({
+      where: { slug },
+      include: {
+        organizer: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+        ticketTypes: true,
+        vouchers: {
+          where: {
+            startDate: { lte: new Date() },
+            endDate: { gte: new Date() },
+          },
+        },
+      },
+    });
+
+    if (!event) {
+      throw new ApiError("Event not found", 404);
+    }
+
+    // Calculate organizer rating
+    const reviews = await this.prisma.review.findMany({
+      where: { eventId: event.id },
+      select: { rating: true },
+    });
+
+    const avgRating =
+      reviews.length > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+        : 0;
+
+    return {
+      ...event,
+      price: event.ticketTypes.length > 0
+        ? Math.min(...event.ticketTypes.map((tt) => tt.price))
+        : 0,
+      totalSeats: event.ticketTypes.reduce((sum, tt) => sum + tt.totalSeat, 0),
+      availableSeats: Math.max(event.ticketTypes.reduce((sum, tt) => sum + tt.availableSeat, 0), 0),
+      organizer: {
+        ...event.organizer,
+        rating: avgRating,
+        totalReviews: reviews.length,
+      },
+    };
+  };
+
   createEvent = async (organizerId: number, body: CreateEventDto) => {
     // Validate organizer exists (or create if missing for existing users)
     const organizer = await this.getOrCreateOrganizer(organizerId);
@@ -265,11 +351,15 @@ export class EventService {
       throw new ApiError("Start date must be in the future", 400);
     }
 
+    // Generate unique slug from title
+    const slug = await this.generateUniqueSlug(body.title, this.prisma);
+
     // Execute single transaction
     return await this.prisma.$transaction(async (tx) => {
       const event = await tx.event.create({
         data: {
           title: body.title,
+          slug,
           description: body.description,
           category: body.category,
           location: body.location,
@@ -533,6 +623,12 @@ export class EventService {
     // 5️⃣ Update fields
     // We update the Event and also sync the price/availableSeats to the first ticketType if present
     // to maintain existing architecture without breaking it.
+    // Regenerate slug if title changed
+    let newSlug: string | undefined;
+    if (body.title && body.title !== event.title) {
+      newSlug = await this.generateUniqueSlug(body.title, this.prisma, eventId);
+    }
+
     return await this.prisma.$transaction(async (tx) => {
       const updatedEvent = await tx.event.update({
         where: { id: eventId },
@@ -545,6 +641,7 @@ export class EventService {
           startDate: body.startDate ? new Date(body.startDate) : undefined,
           endDate: body.endDate ? new Date(body.endDate) : undefined,
           image: body.image,
+          ...(newSlug ? { slug: newSlug } : {}),
         },
         include: { ticketTypes: true }
       });

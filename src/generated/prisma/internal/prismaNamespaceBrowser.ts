@@ -160,6 +160,7 @@ export const EventScalarFieldEnum = {
   venueId: 'venueId',
   categoryId: 'categoryId',
   title: 'title',
+  slug: 'slug',
   description: 'description',
   image: 'image',
   category: 'category',

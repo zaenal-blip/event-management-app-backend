@@ -95,6 +95,7 @@ model Event {
   venueId     Int?
   categoryId  Int?
   title       String
+  slug        String      @unique
   description String      @db.Text
   image       String?
   category    String
