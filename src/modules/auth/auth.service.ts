@@ -148,7 +148,7 @@ export class AuthService {
     // If email fails, user is still created. This is acceptable.
     // We wrap in try-catch to prevent crashing the response.
     try {
-      const baseUrl = process.env.BASE_URL_FE;
+      const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
       if (result.role === "ORGANIZER") {
         await this.mailService.sendEmail(
           result.email,
