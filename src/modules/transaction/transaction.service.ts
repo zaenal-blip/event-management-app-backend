@@ -43,38 +43,22 @@ export class TransactionService {
 
     // Use SQL transaction for atomicity
     const transaction = await this.prisma.$transaction(async (tx) => {
-      // 1. Lock ticket type and check availability using Raw SQL for Locking
-      // Prisma doesn't support "FOR UPDATE" natively yet
-      console.log(`[DEBUG] Locking ticketType ${ticketTypeId}`);
-      const ticketTypes = await tx.$queryRaw<any[]>`
-        SELECT * FROM "backend"."ticket_types"
-        WHERE id = ${ticketTypeId}
-        FOR UPDATE
-      `;
-      console.log(`[DEBUG] Locked. Found ${ticketTypes.length} rows`);
-
-      if (!ticketTypes.length) {
-        throw new ApiError("Ticket type not found", 404);
-      }
-
-      const ticketType: any = ticketTypes[0];
-
-      // Need to fetch event relation separately or assume consistency
-      // Since we need eventId validation, let's fetch event with standard query
-      // The TicketType is already locked so this read is safe from race conditions on TicketType
+      // 1. Fetch ticket type with event — atomicity is guaranteed by $transaction
+      console.log(`[DEBUG] Fetching ticketType ${ticketTypeId}`);
       const ticketTypeRelation = await tx.ticketType.findUnique({
         where: { id: ticketTypeId },
         include: { event: true },
       });
 
       if (!ticketTypeRelation) {
-        // Should not happen given above check
         throw new ApiError("Ticket type not found", 404);
       }
 
       if (ticketTypeRelation.eventId !== eventId) {
         throw new ApiError("Ticket type does not belong to this event", 400);
       }
+
+      const ticketType = ticketTypeRelation;
 
       // Prevent organizer from buying their own event
       const event = ticketTypeRelation.event;
@@ -367,7 +351,7 @@ export class TransactionService {
     });
 
     // Notify organizer about waiting approval
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const frontendUrl = process.env.BASE_URL_FE;
     const organizerUserId = updatedTransaction.event.organizer.user.id;
     const organizerEmail = updatedTransaction.event.organizer.user.email;
 
@@ -500,7 +484,7 @@ export class TransactionService {
     }
 
     // Generate QR code buffers as CID attachments (Gmail blocks data URLs)
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const frontendUrl = process.env.BASE_URL_FE;
     const ticketsForTemplate = [];
     const qrAttachments = [];
     for (let i = 0; i < attendees.length; i++) {
@@ -733,7 +717,7 @@ export class TransactionService {
       minimumFractionDigits: 0,
     }).format(transaction.finalPrice);
 
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const frontendUrl = process.env.BASE_URL_FE;
 
     // Send rejection email using template
     await this.mailService.sendEmail(

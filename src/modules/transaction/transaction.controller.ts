@@ -3,7 +3,7 @@ import { TransactionService } from "./transaction.service.js";
 import { AuthRequest } from "../../middleware/auth.middleware.js";
 
 export class TransactionController {
-  constructor(private transactionService: TransactionService) {}
+  constructor(private transactionService: TransactionService) { }
 
   createTransaction = async (req: AuthRequest, res: Response) => {
     if (!req.user) {

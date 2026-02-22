@@ -18,7 +18,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaClient,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   register = async (body: CreateUserBody) => {
     // 1. Cek avaibilitas email
@@ -347,7 +347,7 @@ export class AuthService {
     });
 
     // Build reset link (raw token sent to user)
-    const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const baseUrl = process.env.BASE_URL_FE;
     const resetLink = `${baseUrl}/reset-password?token=${rawToken}`;
 
     // Send email (wrapped in try-catch to prevent revealing if email exists)
