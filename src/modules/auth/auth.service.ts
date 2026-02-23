@@ -347,7 +347,7 @@ export class AuthService {
     });
 
     // Build reset link (raw token sent to user)
-    const baseUrl = process.env.BASE_URL_FE;
+    const baseUrl = process.env.BASE_FRONTEND_URL;
     const resetLink = `${baseUrl}/reset-password?token=${rawToken}`;
 
     // Send email (wrapped in try-catch to prevent revealing if email exists)

@@ -351,7 +351,7 @@ export class TransactionService {
     });
 
     // Notify organizer about waiting approval
-    const frontendUrl = process.env.BASE_URL_FE;
+    const frontendUrl = process.env.BASE_FRONTEND_URL;
     const organizerUserId = updatedTransaction.event.organizer.user.id;
     const organizerEmail = updatedTransaction.event.organizer.user.email;
 
@@ -484,7 +484,7 @@ export class TransactionService {
     }
 
     // Generate QR code buffers as CID attachments (Gmail blocks data URLs)
-    const frontendUrl = process.env.BASE_URL_FE;
+    const frontendUrl = process.env.BASE_FRONTEND_URL;
     const ticketsForTemplate = [];
     const qrAttachments = [];
     for (let i = 0; i < attendees.length; i++) {
@@ -717,7 +717,7 @@ export class TransactionService {
       minimumFractionDigits: 0,
     }).format(transaction.finalPrice);
 
-    const frontendUrl = process.env.BASE_URL_FE;
+    const frontendUrl = process.env.BASE_FRONTEND_URL;
 
     // Send rejection email using template
     await this.mailService.sendEmail(
